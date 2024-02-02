@@ -1,0 +1,32 @@
+# pyscripts/audio/format_wav_scp.py --fs 16k --audio-format flac --multi-columns-input false --multi-columns-output false dump/raw/valid-s/logs/wav.1.scp dump/raw/valid-s/data/format.1 
+# Started at Thu Feb  1 17:12:18 KST 2024
+#
+2024-02-01 17:12:19,307 (format_wav_scp:151) INFO: /home/bootcamp/dd/espnet/tools/anaconda/envs/espnet2/bin/python3 pyscripts/audio/format_wav_scp.py --fs 16k --audio-format flac --multi-columns-input false --multi-columns-output false dump/raw/valid-s/logs/wav.1.scp dump/raw/valid-s/data/format.1
+0it [00:00, ?it/s]
+0it [00:00, ?it/s][A13it [00:00, 129.68it/s]
+13it [00:00, 129.83it/s][A26it [00:00, 105.86it/s]
+26it [00:00, 105.89it/s][A37it [00:00, 72.64it/s] 
+37it [00:00, 72.63it/s] [A46it [00:00, 68.54it/s]
+46it [00:00, 68.55it/s][A54it [00:00, 70.47it/s]
+54it [00:00, 70.48it/s][A64it [00:00, 76.00it/s]
+64it [00:00, 76.00it/s][A72it [00:00, 76.00it/s]
+72it [00:00, 76.00it/s][A80it [00:01, 76.93it/s]
+80it [00:01, 76.92it/s][A88it [00:01, 72.21it/s]
+88it [00:01, 72.21it/s][A96it [00:01, 71.59it/s]
+96it [00:01, 71.51it/s][A104it [00:01, 71.43it/s]
+104it [00:01, 71.43it/s][A112it [00:01, 61.27it/s]
+112it [00:01, 61.27it/s][A119it [00:01, 60.47it/s]
+119it [00:01, 60.47it/s][A126it [00:01, 56.83it/s]
+126it [00:01, 56.78it/s][A132it [00:01, 49.38it/s]
+132it [00:01, 49.39it/s][A138it [00:02, 45.27it/s]
+138it [00:02, 45.25it/s][A145it [00:02, 50.52it/s]
+145it [00:02, 50.55it/s][A155it [00:02, 60.94it/s]
+155it [00:02, 60.96it/s][A164it [00:02, 66.32it/s]
+164it [00:02, 66.34it/s][A171it [00:02, 64.38it/s]
+171it [00:02, 64.39it/s][A178it [00:02, 65.00it/s]
+178it [00:02, 65.01it/s][A186it [00:02, 67.14it/s]
+186it [00:02, 67.14it/s][A193it [00:02, 66.79it/s]
+193it [00:02, 66.78it/s][A196it [00:02, 66.77it/s]
+196it [00:02, 66.76it/s]
+# Accounting: time=4 threads=1
+# Ended (code 0) at Thu Feb  1 17:12:22 KST 2024, elapsed time 4 seconds

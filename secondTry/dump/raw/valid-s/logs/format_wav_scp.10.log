@@ -1,0 +1,34 @@
+# pyscripts/audio/format_wav_scp.py --fs 16k --audio-format flac --multi-columns-input false --multi-columns-output false dump/raw/valid-s/logs/wav.10.scp dump/raw/valid-s/data/format.10 
+# Started at Thu Feb  1 17:12:18 KST 2024
+#
+2024-02-01 17:12:19,266 (format_wav_scp:151) INFO: /home/bootcamp/dd/espnet/tools/anaconda/envs/espnet2/bin/python3 pyscripts/audio/format_wav_scp.py --fs 16k --audio-format flac --multi-columns-input false --multi-columns-output false dump/raw/valid-s/logs/wav.10.scp dump/raw/valid-s/data/format.10
+0it [00:00, ?it/s]
+0it [00:00, ?it/s][A8it [00:00, 76.90it/s]
+8it [00:00, 76.95it/s][A16it [00:00, 73.36it/s]
+16it [00:00, 73.38it/s][A24it [00:00, 76.00it/s]
+24it [00:00, 76.02it/s][A33it [00:00, 80.82it/s]
+33it [00:00, 80.83it/s][A42it [00:00, 50.18it/s]
+42it [00:00, 50.17it/s][A49it [00:00, 46.34it/s]
+49it [00:00, 46.34it/s][A55it [00:01, 45.73it/s]
+55it [00:01, 45.73it/s][A61it [00:01, 47.97it/s]
+61it [00:01, 47.97it/s][A67it [00:01, 49.01it/s]
+67it [00:01, 49.01it/s][A73it [00:01, 51.68it/s]
+73it [00:01, 51.68it/s][A79it [00:01, 52.36it/s]
+79it [00:01, 52.36it/s][A86it [00:01, 55.25it/s]
+86it [00:01, 55.25it/s][A93it [00:01, 58.07it/s]
+93it [00:01, 58.07it/s][A99it [00:01, 54.13it/s]
+99it [00:01, 54.09it/s][A105it [00:01, 51.21it/s]
+105it [00:01, 51.22it/s][A111it [00:02, 51.42it/s]
+111it [00:02, 51.43it/s][A117it [00:02, 53.40it/s]
+117it [00:02, 53.42it/s][A126it [00:02, 63.05it/s]
+126it [00:02, 63.04it/s][A133it [00:02, 57.64it/s]
+133it [00:02, 57.64it/s][A139it [00:02, 57.12it/s]
+139it [00:02, 57.12it/s][A145it [00:02, 56.86it/s]
+145it [00:02, 56.86it/s][A151it [00:02, 52.70it/s]
+151it [00:02, 52.70it/s][A159it [00:02, 59.40it/s]
+159it [00:02, 59.41it/s][A177it [00:02, 90.35it/s]
+177it [00:02, 90.33it/s][A188it [00:03, 94.09it/s]
+188it [00:03, 94.11it/s][A196it [00:03, 62.31it/s]
+196it [00:03, 62.30it/s]
+# Accounting: time=4 threads=1
+# Ended (code 0) at Thu Feb  1 17:12:22 KST 2024, elapsed time 4 seconds

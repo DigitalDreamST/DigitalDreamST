@@ -1,0 +1,35 @@
+# pyscripts/audio/format_wav_scp.py --fs 16k --audio-format flac --multi-columns-input false --multi-columns-output false dump/raw/valid-s/logs/wav.32.scp dump/raw/valid-s/data/format.32 
+# Started at Thu Feb  1 17:12:18 KST 2024
+#
+2024-02-01 17:12:19,197 (format_wav_scp:151) INFO: /home/bootcamp/dd/espnet/tools/anaconda/envs/espnet2/bin/python3 pyscripts/audio/format_wav_scp.py --fs 16k --audio-format flac --multi-columns-input false --multi-columns-output false dump/raw/valid-s/logs/wav.32.scp dump/raw/valid-s/data/format.32
+0it [00:00, ?it/s]
+0it [00:00, ?it/s][A11it [00:00, 103.66it/s]
+11it [00:00, 103.78it/s][A22it [00:00, 86.74it/s] 
+22it [00:00, 86.78it/s] [A31it [00:00, 66.19it/s]
+31it [00:00, 66.20it/s][A39it [00:00, 60.21it/s]
+39it [00:00, 60.22it/s][A46it [00:00, 58.69it/s]
+46it [00:00, 58.69it/s][A53it [00:00, 57.35it/s]
+53it [00:00, 57.36it/s][A60it [00:00, 60.53it/s]
+60it [00:00, 60.53it/s][A67it [00:01, 55.13it/s]
+67it [00:01, 55.13it/s][A73it [00:01, 51.94it/s]
+73it [00:01, 51.94it/s][A79it [00:01, 43.78it/s]
+79it [00:01, 43.78it/s][A84it [00:01, 39.23it/s]
+84it [00:01, 39.23it/s][A89it [00:01, 39.95it/s]
+89it [00:01, 39.95it/s][A94it [00:01, 41.74it/s]
+94it [00:01, 41.74it/s][A99it [00:01, 41.07it/s]
+99it [00:01, 41.05it/s][A104it [00:02, 36.49it/s]
+104it [00:02, 36.48it/s][A111it [00:02, 41.12it/s]
+111it [00:02, 41.12it/s][A118it [00:02, 47.15it/s]
+118it [00:02, 47.15it/s][A125it [00:02, 51.92it/s]
+125it [00:02, 51.92it/s][A131it [00:02, 53.53it/s]
+131it [00:02, 53.53it/s][A138it [00:02, 56.68it/s]
+138it [00:02, 56.68it/s][A144it [00:02, 47.31it/s]
+144it [00:02, 47.29it/s][A150it [00:03, 38.40it/s]
+150it [00:03, 38.39it/s][A155it [00:03, 40.38it/s]
+155it [00:03, 40.37it/s][A160it [00:03, 40.58it/s]
+160it [00:03, 40.59it/s][A171it [00:03, 56.43it/s]
+171it [00:03, 56.44it/s][A184it [00:03, 72.75it/s]
+184it [00:03, 72.76it/s][A195it [00:03, 53.80it/s]
+195it [00:03, 53.79it/s]
+# Accounting: time=4 threads=1
+# Ended (code 0) at Thu Feb  1 17:12:22 KST 2024, elapsed time 4 seconds

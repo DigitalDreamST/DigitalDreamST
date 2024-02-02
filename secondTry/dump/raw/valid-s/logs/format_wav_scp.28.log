@@ -1,0 +1,33 @@
+# pyscripts/audio/format_wav_scp.py --fs 16k --audio-format flac --multi-columns-input false --multi-columns-output false dump/raw/valid-s/logs/wav.28.scp dump/raw/valid-s/data/format.28 
+# Started at Thu Feb  1 17:12:18 KST 2024
+#
+2024-02-01 17:12:19,415 (format_wav_scp:151) INFO: /home/bootcamp/dd/espnet/tools/anaconda/envs/espnet2/bin/python3 pyscripts/audio/format_wav_scp.py --fs 16k --audio-format flac --multi-columns-input false --multi-columns-output false dump/raw/valid-s/logs/wav.28.scp dump/raw/valid-s/data/format.28
+0it [00:00, ?it/s]
+0it [00:00, ?it/s][A7it [00:00, 67.25it/s]
+7it [00:00, 67.32it/s][A16it [00:00, 79.49it/s]
+16it [00:00, 79.52it/s][A24it [00:00, 72.72it/s]
+24it [00:00, 72.73it/s][A32it [00:00, 73.21it/s]
+32it [00:00, 73.23it/s][A41it [00:00, 75.73it/s]
+41it [00:00, 75.72it/s][A51it [00:00, 82.44it/s]
+51it [00:00, 82.45it/s][A60it [00:00, 80.22it/s]
+60it [00:00, 80.17it/s][A69it [00:00, 81.72it/s]
+69it [00:00, 81.74it/s][A78it [00:01, 75.89it/s]
+78it [00:01, 75.81it/s][A86it [00:01, 73.70it/s]
+86it [00:01, 73.74it/s][A94it [00:01, 74.90it/s]
+94it [00:01, 74.91it/s][A102it [00:01, 73.31it/s]
+102it [00:01, 73.32it/s][A110it [00:01, 66.09it/s]
+110it [00:01, 66.10it/s][A117it [00:01, 62.40it/s]
+117it [00:01, 62.41it/s][A125it [00:01, 63.60it/s]
+125it [00:01, 63.61it/s][A132it [00:01, 63.42it/s]
+132it [00:01, 63.40it/s][A139it [00:01, 58.92it/s]
+139it [00:01, 58.91it/s][A147it [00:02, 63.17it/s]
+147it [00:02, 63.17it/s][A154it [00:02, 62.06it/s]
+154it [00:02, 62.06it/s][A161it [00:02, 61.37it/s]
+161it [00:02, 61.38it/s][A168it [00:02, 59.77it/s]
+168it [00:02, 59.77it/s][A177it [00:02, 67.38it/s]
+177it [00:02, 67.38it/s][A185it [00:02, 70.53it/s]
+185it [00:02, 70.52it/s][A193it [00:02, 70.89it/s]
+193it [00:02, 70.88it/s][A195it [00:02, 69.05it/s]
+195it [00:02, 69.04it/s]
+# Accounting: time=4 threads=1
+# Ended (code 0) at Thu Feb  1 17:12:22 KST 2024, elapsed time 4 seconds
