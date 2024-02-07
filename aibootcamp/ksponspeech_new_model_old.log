@@ -1,0 +1,1097 @@
+# python3 -m espnet2.bin.asr_train --use_preprocessor true --bpemodel none --token_type char --token_list data/kr_token_list/char/tokens.txt --non_linguistic_symbols none --cleaner none --g2p none --valid_data_path_and_name_and_type dump/raw/dev/wav.scp,speech,sound --valid_shape_file exp/asr_stats_raw_kr_char/valid/speech_shape --resume true --ignore_init_mismatch false --fold_length 80000 --output_dir exp/asr_train_asr_conformer8_n_fft512_hop_length256_raw_kr_char --config conf/tuning/train_asr_conformer8_n_fft512_hop_length256.yaml --frontend_conf fs=16k --normalize=global_mvn --normalize_conf stats_file=exp/asr_stats_raw_kr_char/train/feats_stats.npz --train_data_path_and_name_and_type dump/raw/train/wav.scp,speech,sound --train_shape_file exp/asr_stats_raw_kr_char/train/speech_shape --fold_length 150 --train_data_path_and_name_and_type dump/raw/train/text,text,text --train_shape_file exp/asr_stats_raw_kr_char/train/text_shape.char --valid_data_path_and_name_and_type dump/raw/dev/text,text,text --valid_shape_file exp/asr_stats_raw_kr_char/valid/text_shape.char --ngpu 4 --multiprocessing_distributed True 
+# Started at Sat Feb  3 00:56:50 KST 2024
+#
+/home/bootcamp/dd/espnet/tools/anaconda/envs/espnet2/bin/python3 /home/bootcamp/dd/espnet/espnet2/bin/asr_train.py --use_preprocessor true --bpemodel none --token_type char --token_list data/kr_token_list/char/tokens.txt --non_linguistic_symbols none --cleaner none --g2p none --valid_data_path_and_name_and_type dump/raw/dev/wav.scp,speech,sound --valid_shape_file exp/asr_stats_raw_kr_char/valid/speech_shape --resume true --ignore_init_mismatch false --fold_length 80000 --output_dir exp/asr_train_asr_conformer8_n_fft512_hop_length256_raw_kr_char --config conf/tuning/train_asr_conformer8_n_fft512_hop_length256.yaml --frontend_conf fs=16k --normalize=global_mvn --normalize_conf stats_file=exp/asr_stats_raw_kr_char/train/feats_stats.npz --train_data_path_and_name_and_type dump/raw/train/wav.scp,speech,sound --train_shape_file exp/asr_stats_raw_kr_char/train/speech_shape --fold_length 150 --train_data_path_and_name_and_type dump/raw/train/text,text,text --train_shape_file exp/asr_stats_raw_kr_char/train/text_shape.char --valid_data_path_and_name_and_type dump/raw/dev/text,text,text --valid_shape_file exp/asr_stats_raw_kr_char/valid/text_shape.char --ngpu 4 --multiprocessing_distributed True
+[seoultech:0/4] 2024-02-03 00:57:01,548 (distributed_c10d:442) INFO: Added key: store_based_barrier_key:1 to store for rank: 0
+[seoultech:0/4] 2024-02-03 00:57:01,548 (distributed_c10d:476) INFO: Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[seoultech:0/4] 2024-02-03 00:57:01,731 (asr:523) INFO: Vocabulary size: 2512
+[seoultech:0/4] 2024-02-03 00:57:01,925 (conformer_encoder:139) WARNING: Using legacy_rel_pos and it will be deprecated in the future.
+[seoultech:0/4] 2024-02-03 00:57:02,012 (conformer_encoder:246) WARNING: Using legacy_rel_selfattn and it will be deprecated in the future.
+[seoultech:0/4] 2024-02-03 00:57:04,597 (abs_task:1260) INFO: pytorch.version=2.0.1, cuda.available=True, cudnn.version=8500, cudnn.benchmark=False, cudnn.deterministic=True
+[seoultech:0/4] 2024-02-03 00:57:04,607 (abs_task:1261) INFO: Model structure:
+ESPnetASRModel(
+  (frontend): DefaultFrontend(
+    (stft): Stft(n_fft=400, win_length=400, hop_length=160, center=True, normalized=False, onesided=True)
+    (frontend): Frontend()
+    (logmel): LogMel(sr=16000, n_fft=400, n_mels=80, fmin=0, fmax=8000.0, htk=False)
+  )
+  (specaug): SpecAug(
+    (time_warp): TimeWarp(window=5, mode=bicubic)
+    (freq_mask): MaskAlongAxis(mask_width_range=[0, 30], num_mask=2, axis=freq)
+    (time_mask): MaskAlongAxis(mask_width_range=[0, 40], num_mask=2, axis=time)
+  )
+  (normalize): GlobalMVN(stats_file=exp/asr_stats_raw_kr_char/train/feats_stats.npz, norm_means=True, norm_vars=True)
+  (encoder): ConformerEncoder(
+    (embed): Conv2dSubsampling(
+      (conv): Sequential(
+        (0): Conv2d(1, 512, kernel_size=(3, 3), stride=(2, 2))
+        (1): ReLU()
+        (2): Conv2d(512, 512, kernel_size=(3, 3), stride=(2, 2))
+        (3): ReLU()
+      )
+      (out): Sequential(
+        (0): Linear(in_features=9728, out_features=512, bias=True)
+        (1): LegacyRelPositionalEncoding(
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+      )
+    )
+    (encoders): MultiSequential(
+      (0): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (1): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (2): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (3): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (4): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (5): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (6): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (7): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (8): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (9): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (10): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (11): EncoderLayer(
+        (self_attn): LegacyRelPositionMultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (linear_pos): Linear(in_features=512, out_features=512, bias=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (feed_forward_macaron): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): Swish()
+        )
+        (conv_module): ConvolutionModule(
+          (pointwise_conv1): Conv1d(512, 1024, kernel_size=(1,), stride=(1,))
+          (depthwise_conv): Conv1d(512, 512, kernel_size=(31,), stride=(1,), padding=(15,), groups=512)
+          (norm): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (pointwise_conv2): Conv1d(512, 512, kernel_size=(1,), stride=(1,))
+          (activation): Swish()
+        )
+        (norm_ff): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_mha): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_ff_macaron): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_conv): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm_final): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+    )
+    (after_norm): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+  )
+  (decoder): TransformerDecoder(
+    (embed): Sequential(
+      (0): Embedding(2512, 512)
+      (1): PositionalEncoding(
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+    )
+    (after_norm): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+    (output_layer): Linear(in_features=512, out_features=2512, bias=True)
+    (decoders): MultiSequential(
+      (0): DecoderLayer(
+        (self_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (src_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): ReLU()
+        )
+        (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm3): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (1): DecoderLayer(
+        (self_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (src_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): ReLU()
+        )
+        (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm3): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (2): DecoderLayer(
+        (self_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (src_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): ReLU()
+        )
+        (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm3): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (3): DecoderLayer(
+        (self_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (src_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): ReLU()
+        )
+        (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm3): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (4): DecoderLayer(
+        (self_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (src_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): ReLU()
+        )
+        (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm3): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+      (5): DecoderLayer(
+        (self_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (src_attn): MultiHeadedAttention(
+          (linear_q): Linear(in_features=512, out_features=512, bias=True)
+          (linear_k): Linear(in_features=512, out_features=512, bias=True)
+          (linear_v): Linear(in_features=512, out_features=512, bias=True)
+          (linear_out): Linear(in_features=512, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+        (feed_forward): PositionwiseFeedForward(
+          (w_1): Linear(in_features=512, out_features=2048, bias=True)
+          (w_2): Linear(in_features=2048, out_features=512, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+          (activation): ReLU()
+        )
+        (norm1): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm2): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (norm3): LayerNorm((512,), eps=1e-12, elementwise_affine=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+      )
+    )
+  )
+  (criterion_att): LabelSmoothingLoss(
+    (criterion): KLDivLoss()
+  )
+  (ctc): CTC(
+    (ctc_lo): Linear(in_features=512, out_features=2512, bias=True)
+    (ctc_loss): CTCLoss()
+  )
+)
+
+Model summary:
+    Class Name: ESPnetASRModel
+    Total Number of model parameters: 112.32 M
+    Number of trainable parameters: 112.32 M (100.0%)
+    Size: 449.28 MB
+    Type: torch.float32
+[seoultech:0/4] 2024-02-03 00:57:04,607 (abs_task:1264) INFO: Optimizer:
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    initial_lr: 0.0002
+    lr: 5e-09
+    maximize: False
+    weight_decay: 0
+)
+[seoultech:0/4] 2024-02-03 00:57:04,607 (abs_task:1265) INFO: Scheduler: WarmupLR(warmup_steps=40000)
+[seoultech:0/4] 2024-02-03 00:57:04,608 (abs_task:1274) INFO: Saving the configuration in exp/asr_train_asr_conformer8_n_fft512_hop_length256_raw_kr_char/config.yaml
+[seoultech:0/4] 2024-02-03 00:57:08,789 (asr:494) INFO: Optional Data Names: ('text_spk2', 'text_spk3', 'text_spk4', 'prompt')
+[seoultech:0/4] 2024-02-03 00:57:20,096 (abs_task:1650) INFO: [train] dataset:
+ESPnetDataset(
+  speech: {"path": "dump/raw/train/wav.scp", "type": "sound"}
+  text: {"path": "dump/raw/train/text", "type": "text"}
+  preprocess: <espnet2.train.preprocessor.CommonPreprocessor object at 0x7f5f75880e20>)
+[seoultech:0/4] 2024-02-03 00:57:20,096 (abs_task:1651) INFO: [train] Batch sampler: NumElementsBatchSampler(N-batch=22384, batch_bins=18000000, sort_in_batch=descending, sort_batch=descending)
+[seoultech:0/4] 2024-02-03 00:57:20,099 (abs_task:1652) INFO: [train] mini-batch sizes summary: N-batch=22384, mean=66.9, min=15, max=609
+[seoultech:0/4] 2024-02-03 00:57:20,515 (asr:494) INFO: Optional Data Names: ('text_spk2', 'text_spk3', 'text_spk4', 'prompt')
+[seoultech:0/4] 2024-02-03 00:57:21,611 (abs_task:1650) INFO: [valid] dataset:
+ESPnetDataset(
+  speech: {"path": "dump/raw/dev/wav.scp", "type": "sound"}
+  text: {"path": "dump/raw/dev/text", "type": "text"}
+  preprocess: <espnet2.train.preprocessor.CommonPreprocessor object at 0x7f5f75881360>)
+[seoultech:0/4] 2024-02-03 00:57:21,611 (abs_task:1651) INFO: [valid] Batch sampler: NumElementsBatchSampler(N-batch=2844, batch_bins=18000000, sort_in_batch=descending, sort_batch=descending)
+[seoultech:0/4] 2024-02-03 00:57:21,612 (abs_task:1652) INFO: [valid] mini-batch sizes summary: N-batch=2844, mean=67.0, min=12, max=551
+[seoultech:0/4] 2024-02-03 00:57:21,917 (asr:494) INFO: Optional Data Names: ('text_spk2', 'text_spk3', 'text_spk4', 'prompt')
+[seoultech:0/4] 2024-02-03 00:57:22,257 (abs_task:1650) INFO: [plot_att] dataset:
+ESPnetDataset(
+  speech: {"path": "dump/raw/dev/wav.scp", "type": "sound"}
+  text: {"path": "dump/raw/dev/text", "type": "text"}
+  preprocess: <espnet2.train.preprocessor.CommonPreprocessor object at 0x7f5f75880cd0>)
+[seoultech:0/4] 2024-02-03 00:57:22,257 (abs_task:1651) INFO: [plot_att] Batch sampler: UnsortedBatchSampler(N-batch=190471, batch_size=1, key_file=exp/asr_stats_raw_kr_char/valid/speech_shape, 
+[seoultech:0/4] 2024-02-03 00:57:22,257 (abs_task:1652) INFO: [plot_att] mini-batch sizes summary: N-batch=3, mean=1.0, min=1, max=1
+seoultech:610285:610285 [0] NCCL INFO Bootstrap : Using eno1:117.17.185.208<0>
+seoultech:610285:610285 [0] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+seoultech:610285:610285 [0] NCCL INFO cudaDriverVersion 11070
+NCCL version 2.14.3+cuda11.7
+[seoultech:0/4] 2024-02-03 00:57:23,744 (trainer:298) INFO: 1/35epoch started
+seoultech:610288:610288 [3] NCCL INFO cudaDriverVersion 11070
+seoultech:610288:610288 [3] NCCL INFO Bootstrap : Using eno1:117.17.185.208<0>
+seoultech:610288:610288 [3] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+seoultech:610288:610339 [3] NCCL INFO NET/IB : No device found.
+seoultech:610288:610339 [3] NCCL INFO NET/Socket : Using [0]eno1:117.17.185.208<0>
+seoultech:610288:610339 [3] NCCL INFO Using network Socket
+seoultech:610288:610339 [3] NCCL INFO Setting affinity for GPU 3 to fff0,00fff000
+seoultech:610288:610339 [3] NCCL INFO Trees [0] -1/-1/-1->3->2 [1] -1/-1/-1->3->2
+seoultech:610288:610339 [3] NCCL INFO Channel 00 : 3[ca000] -> 0[31000] via SHM/direct/direct
+seoultech:610288:610339 [3] NCCL INFO Channel 01 : 3[ca000] -> 0[31000] via SHM/direct/direct
+seoultech:610288:610339 [3] NCCL INFO Connected all rings
+seoultech:610288:610339 [3] NCCL INFO Channel 00 : 3[ca000] -> 2[b1000] via SHM/direct/direct
+seoultech:610288:610339 [3] NCCL INFO Channel 01 : 3[ca000] -> 2[b1000] via SHM/direct/direct
+seoultech:610288:610339 [3] NCCL INFO Connected all trees
+seoultech:610288:610339 [3] NCCL INFO threadThresholds 8/8/64 | 32/8/64 | 512 | 512
+seoultech:610288:610339 [3] NCCL INFO 2 coll channels, 2 p2p channels, 2 p2p channels per peer
+seoultech:610288:610339 [3] NCCL INFO comm 0x9ba14c0 rank 3 nranks 4 cudaDev 3 busId ca000 - Init COMPLETE
+seoultech:610286:610286 [1] NCCL INFO cudaDriverVersion 11070
+seoultech:610286:610286 [1] NCCL INFO Bootstrap : Using eno1:117.17.185.208<0>
+seoultech:610286:610286 [1] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+seoultech:610286:610341 [1] NCCL INFO NET/IB : No device found.
+seoultech:610286:610341 [1] NCCL INFO NET/Socket : Using [0]eno1:117.17.185.208<0>
+seoultech:610286:610341 [1] NCCL INFO Using network Socket
+seoultech:610286:610341 [1] NCCL INFO Setting affinity for GPU 1 to 0f,ff000fff
+seoultech:610286:610341 [1] NCCL INFO Trees [0] 2/-1/-1->1->0 [1] 2/-1/-1->1->0
+seoultech:610286:610341 [1] NCCL INFO Channel 00 : 1[4b000] -> 2[b1000] via SHM/direct/direct
+seoultech:610286:610341 [1] NCCL INFO Channel 01 : 1[4b000] -> 2[b1000] via SHM/direct/direct
+seoultech:610286:610341 [1] NCCL INFO Connected all rings
+seoultech:610286:610341 [1] NCCL INFO Channel 00 : 1[4b000] -> 0[31000] via SHM/direct/direct
+seoultech:610286:610341 [1] NCCL INFO Channel 01 : 1[4b000] -> 0[31000] via SHM/direct/direct
+seoultech:610286:610341 [1] NCCL INFO Connected all trees
+seoultech:610286:610341 [1] NCCL INFO threadThresholds 8/8/64 | 32/8/64 | 512 | 512
+seoultech:610286:610341 [1] NCCL INFO 2 coll channels, 2 p2p channels, 2 p2p channels per peer
+seoultech:610286:610341 [1] NCCL INFO comm 0x42f4a660 rank 1 nranks 4 cudaDev 1 busId 4b000 - Init COMPLETE
+seoultech:610285:610340 [0] NCCL INFO NET/IB : No device found.
+seoultech:610285:610340 [0] NCCL INFO NET/Socket : Using [0]eno1:117.17.185.208<0>
+seoultech:610285:610340 [0] NCCL INFO Using network Socket
+seoultech:610285:610340 [0] NCCL INFO Setting affinity for GPU 0 to 0f,ff000fff
+seoultech:610285:610340 [0] NCCL INFO Channel 00/02 :    0   1   2   3
+seoultech:610285:610340 [0] NCCL INFO Channel 01/02 :    0   1   2   3
+seoultech:610285:610340 [0] NCCL INFO Trees [0] 1/-1/-1->0->-1 [1] 1/-1/-1->0->-1
+seoultech:610285:610340 [0] NCCL INFO Channel 00 : 0[31000] -> 1[4b000] via SHM/direct/direct
+seoultech:610285:610340 [0] NCCL INFO Channel 01 : 0[31000] -> 1[4b000] via SHM/direct/direct
+seoultech:610285:610340 [0] NCCL INFO Connected all rings
+seoultech:610285:610340 [0] NCCL INFO Connected all trees
+seoultech:610285:610340 [0] NCCL INFO threadThresholds 8/8/64 | 32/8/64 | 512 | 512
+seoultech:610285:610340 [0] NCCL INFO 2 coll channels, 2 p2p channels, 2 p2p channels per peer
+seoultech:610285:610340 [0] NCCL INFO comm 0xa098820 rank 0 nranks 4 cudaDev 0 busId 31000 - Init COMPLETE
+seoultech:610287:610287 [2] NCCL INFO cudaDriverVersion 11070
+seoultech:610287:610287 [2] NCCL INFO Bootstrap : Using eno1:117.17.185.208<0>
+seoultech:610287:610287 [2] NCCL INFO NET/Plugin : No plugin found (libnccl-net.so), using internal implementation
+seoultech:610287:610342 [2] NCCL INFO NET/IB : No device found.
+seoultech:610287:610342 [2] NCCL INFO NET/Socket : Using [0]eno1:117.17.185.208<0>
+seoultech:610287:610342 [2] NCCL INFO Using network Socket
+seoultech:610287:610342 [2] NCCL INFO Setting affinity for GPU 2 to fff0,00fff000
+seoultech:610287:610342 [2] NCCL INFO Trees [0] 3/-1/-1->2->1 [1] 3/-1/-1->2->1
+seoultech:610287:610342 [2] NCCL INFO Channel 00 : 2[b1000] -> 3[ca000] via SHM/direct/direct
+seoultech:610287:610342 [2] NCCL INFO Channel 01 : 2[b1000] -> 3[ca000] via SHM/direct/direct
+seoultech:610287:610342 [2] NCCL INFO Connected all rings
+seoultech:610287:610342 [2] NCCL INFO Channel 00 : 2[b1000] -> 1[4b000] via SHM/direct/direct
+seoultech:610287:610342 [2] NCCL INFO Channel 01 : 2[b1000] -> 1[4b000] via SHM/direct/direct
+seoultech:610287:610342 [2] NCCL INFO Connected all trees
+seoultech:610287:610342 [2] NCCL INFO threadThresholds 8/8/64 | 32/8/64 | 512 | 512
+seoultech:610287:610342 [2] NCCL INFO 2 coll channels, 2 p2p channels, 2 p2p channels per peer
+seoultech:610287:610342 [2] NCCL INFO comm 0x95be590 rank 2 nranks 4 cudaDev 2 busId b1000 - Init COMPLETE
+[seoultech:0/4] 2024-02-03 00:57:38,919 (distributed:1140) INFO: Reducer buckets have been rebuilt in this iteration.
+[seoultech:0/4] 2024-02-03 01:06:35,959 (trainer:753) INFO: 1epoch:train:1-1119batch: iter_time=6.035e-04, forward_time=0.139, loss_ctc=395.339, loss_att=277.462, acc=0.144, loss=312.825, backward_time=0.154, grad_norm=416.689, clip=100.000, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=2.805e-06, train_time=0.493
+[seoultech:0/4] 2024-02-03 01:15:20,713 (trainer:753) INFO: 1epoch:train:1120-2238batch: iter_time=1.838e-04, forward_time=0.132, loss_ctc=212.829, loss_att=170.548, acc=0.304, loss=183.232, backward_time=0.163, grad_norm=38.802, clip=100.000, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.400e-06, train_time=0.468
+[seoultech:0/4] 2024-02-03 01:23:49,764 (trainer:753) INFO: 1epoch:train:2239-3357batch: iter_time=1.913e-04, forward_time=0.136, loss_ctc=200.317, loss_att=148.876, acc=0.350, loss=164.308, backward_time=0.136, grad_norm=38.428, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.399e-05, train_time=0.454
+[seoultech:0/4] 2024-02-03 01:32:21,389 (trainer:753) INFO: 1epoch:train:3358-4476batch: iter_time=1.875e-04, forward_time=0.135, loss_ctc=196.360, loss_att=141.465, acc=0.366, loss=157.933, backward_time=0.151, grad_norm=43.025, clip=100.000, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.959e-05, train_time=0.456
+[seoultech:0/4] 2024-02-03 01:40:42,233 (trainer:753) INFO: 1epoch:train:4477-5595batch: iter_time=1.924e-04, forward_time=0.137, loss_ctc=188.581, loss_att=134.042, acc=0.380, loss=150.404, backward_time=0.136, grad_norm=53.978, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=2.519e-05, train_time=0.447
+[seoultech:0/4] 2024-02-03 01:48:59,140 (trainer:753) INFO: 1epoch:train:5596-6714batch: iter_time=1.757e-04, forward_time=0.119, loss_ctc=181.135, loss_att=129.775, acc=0.386, loss=145.183, backward_time=0.148, grad_norm=63.047, clip=100.000, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=3.078e-05, train_time=0.443
+[seoultech:0/4] 2024-02-03 01:57:17,275 (trainer:753) INFO: 1epoch:train:6715-7833batch: iter_time=1.887e-04, forward_time=0.123, loss_ctc=181.399, loss_att=133.946, acc=0.395, loss=148.182, backward_time=0.137, grad_norm=73.834, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=3.638e-05, train_time=0.444
+[seoultech:0/4] 2024-02-03 02:05:33,500 (trainer:753) INFO: 1epoch:train:7834-8952batch: iter_time=1.884e-04, forward_time=0.132, loss_ctc=160.923, loss_att=123.750, acc=0.408, loss=134.902, backward_time=0.147, grad_norm=84.489, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=4.197e-05, train_time=0.443
+[seoultech:0/4] 2024-02-03 02:13:43,016 (trainer:753) INFO: 1epoch:train:8953-10071batch: iter_time=1.749e-04, forward_time=0.128, loss_ctc=156.670, loss_att=127.845, acc=0.415, loss=136.493, backward_time=0.145, grad_norm=98.120, clip=100.000, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=4.756e-05, train_time=0.437
+[seoultech:0/4] 2024-02-03 02:22:05,523 (trainer:753) INFO: 1epoch:train:10072-11190batch: iter_time=2.060e-04, forward_time=0.138, loss_ctc=135.337, loss_att=118.615, acc=0.431, loss=123.631, backward_time=0.152, grad_norm=93.262, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=5.316e-05, train_time=0.448
+[seoultech:0/4] 2024-02-03 02:30:26,119 (trainer:753) INFO: 1epoch:train:11191-12309batch: iter_time=1.985e-04, forward_time=0.132, loss_ctc=123.035, loss_att=116.144, acc=0.443, loss=118.211, backward_time=0.152, grad_norm=96.742, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=5.875e-05, train_time=0.447
+[seoultech:0/4] 2024-02-03 02:38:38,804 (trainer:753) INFO: 1epoch:train:12310-13428batch: iter_time=1.723e-04, forward_time=0.116, loss_ctc=110.931, loss_att=110.118, acc=0.465, loss=110.362, backward_time=0.134, grad_norm=100.077, clip=100.000, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=6.435e-05, train_time=0.440
+[seoultech:0/4] 2024-02-03 02:46:59,640 (trainer:753) INFO: 1epoch:train:13429-14547batch: iter_time=1.907e-04, forward_time=0.124, loss_ctc=104.408, loss_att=104.345, acc=0.502, loss=104.364, backward_time=0.143, grad_norm=108.377, clip=100.000, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=6.994e-05, train_time=0.447
+[seoultech:0/4] 2024-02-03 02:55:18,169 (trainer:753) INFO: 1epoch:train:14548-15666batch: iter_time=1.737e-04, forward_time=0.115, loss_ctc=101.229, loss_att=97.009, acc=0.545, loss=98.275, backward_time=0.142, grad_norm=122.347, clip=100.000, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=7.554e-05, train_time=0.445
+[seoultech:0/4] 2024-02-03 03:03:31,033 (trainer:753) INFO: 1epoch:train:15667-16785batch: iter_time=2.283e-04, forward_time=0.134, loss_ctc=91.772, loss_att=81.341, acc=0.591, loss=84.470, backward_time=0.152, grad_norm=134.045, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.114e-05, train_time=0.440
+[seoultech:0/4] 2024-02-03 03:11:46,753 (trainer:753) INFO: 1epoch:train:16786-17904batch: iter_time=1.917e-04, forward_time=0.131, loss_ctc=83.855, loss_att=69.214, acc=0.632, loss=73.606, backward_time=0.136, grad_norm=144.138, clip=100.000, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.673e-05, train_time=0.442
+[seoultech:0/4] 2024-02-03 03:19:52,431 (trainer:753) INFO: 1epoch:train:17905-19023batch: iter_time=1.898e-04, forward_time=0.127, loss_ctc=85.982, loss_att=66.401, acc=0.664, loss=72.275, backward_time=0.138, grad_norm=141.525, clip=100.000, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=9.232e-05, train_time=0.433
+[seoultech:0/4] 2024-02-03 03:28:02,751 (trainer:753) INFO: 1epoch:train:19024-20142batch: iter_time=1.748e-04, forward_time=0.117, loss_ctc=79.256, loss_att=57.318, acc=0.687, loss=63.899, backward_time=0.156, grad_norm=130.300, clip=100.000, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=9.792e-05, train_time=0.437
+[seoultech:0/4] 2024-02-03 03:36:17,507 (trainer:753) INFO: 1epoch:train:20143-21261batch: iter_time=1.605e-04, forward_time=0.109, loss_ctc=79.162, loss_att=55.774, acc=0.711, loss=62.791, backward_time=0.151, grad_norm=128.746, clip=100.000, loss_scale=1.000, optim_step_time=0.032, optim0_lr0=1.035e-04, train_time=0.442
+[seoultech:0/4] 2024-02-03 03:44:28,225 (trainer:753) INFO: 1epoch:train:21262-22380batch: iter_time=1.840e-04, forward_time=0.117, loss_ctc=71.568, loss_att=48.098, acc=0.723, loss=55.139, backward_time=0.154, grad_norm=113.239, clip=100.000, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=1.091e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 04:01:29,534 (trainer:352) INFO: 1epoch results: [train] iter_time=2.078e-04, forward_time=0.127, loss_ctc=146.175, loss_att=115.060, acc=0.478, loss=124.395, backward_time=0.146, grad_norm=111.163, clip=100.000, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=5.597e-05, train_time=0.447, time=2 hours, 47 minutes and 9.31 seconds, total_count=22384, gpu_max_cached_mem_GB=19.725, [valid] loss_ctc=51.876, cer_ctc=0.307, loss_att=34.518, acc=0.814, cer=0.242, wer=0.522, loss=39.725, time=15 minutes and 20.63 seconds, total_count=2844, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 35.83 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-03 04:01:34,849 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-03 04:01:34,850 (trainer:286) INFO: 2/35epoch started. Estimated time to finish: 4 days, 8 hours and 22 minutes
+[seoultech:0/4] 2024-02-03 04:09:47,539 (trainer:753) INFO: 2epoch:train:1-1119batch: iter_time=0.001, forward_time=0.116, loss_ctc=70.052, loss_att=45.758, acc=0.741, loss=53.046, backward_time=0.138, grad_norm=102.855, clip=100.000, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.147e-04, train_time=0.440
+[seoultech:0/4] 2024-02-03 04:17:59,716 (trainer:753) INFO: 2epoch:train:1120-2238batch: iter_time=1.681e-04, forward_time=0.120, loss_ctc=66.975, loss_att=42.943, acc=0.752, loss=50.153, backward_time=0.148, grad_norm=98.738, clip=100.000, loss_scale=1.000, optim_step_time=0.032, optim0_lr0=1.203e-04, train_time=0.439
+[seoultech:0/4] 2024-02-03 04:26:10,379 (trainer:753) INFO: 2epoch:train:2239-3357batch: iter_time=1.872e-04, forward_time=0.116, loss_ctc=68.008, loss_att=42.650, acc=0.762, loss=50.258, backward_time=0.150, grad_norm=95.175, clip=100.000, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=1.259e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 04:34:24,986 (trainer:753) INFO: 2epoch:train:3358-4476batch: iter_time=1.997e-04, forward_time=0.121, loss_ctc=62.642, loss_att=38.586, acc=0.768, loss=45.803, backward_time=0.161, grad_norm=88.909, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.315e-04, train_time=0.441
+[seoultech:0/4] 2024-02-03 04:42:35,441 (trainer:753) INFO: 2epoch:train:4477-5595batch: iter_time=1.939e-04, forward_time=0.126, loss_ctc=63.965, loss_att=38.917, acc=0.779, loss=46.431, backward_time=0.156, grad_norm=87.189, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.371e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 04:50:46,064 (trainer:753) INFO: 2epoch:train:5596-6714batch: iter_time=1.957e-04, forward_time=0.117, loss_ctc=61.147, loss_att=36.792, acc=0.784, loss=44.099, backward_time=0.157, grad_norm=85.200, clip=100.000, loss_scale=1.000, optim_step_time=0.032, optim0_lr0=1.427e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 04:58:54,231 (trainer:753) INFO: 2epoch:train:6715-7833batch: iter_time=1.891e-04, forward_time=0.128, loss_ctc=59.918, loss_att=35.369, acc=0.790, loss=42.734, backward_time=0.158, grad_norm=78.058, clip=100.000, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.483e-04, train_time=0.435
+[seoultech:0/4] 2024-02-03 05:07:07,506 (trainer:753) INFO: 2epoch:train:7834-8952batch: iter_time=1.948e-04, forward_time=0.128, loss_ctc=60.356, loss_att=35.229, acc=0.798, loss=42.767, backward_time=0.168, grad_norm=77.086, clip=100.000, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.539e-04, train_time=0.440
+[seoultech:0/4] 2024-02-03 05:15:13,724 (trainer:753) INFO: 2epoch:train:8953-10071batch: iter_time=1.814e-04, forward_time=0.121, loss_ctc=57.074, loss_att=33.145, acc=0.800, loss=40.324, backward_time=0.144, grad_norm=72.619, clip=100.000, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.595e-04, train_time=0.434
+[seoultech:0/4] 2024-02-03 05:23:21,581 (trainer:753) INFO: 2epoch:train:10072-11190batch: iter_time=1.795e-04, forward_time=0.119, loss_ctc=57.311, loss_att=33.025, acc=0.806, loss=40.311, backward_time=0.138, grad_norm=73.266, clip=100.000, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=1.651e-04, train_time=0.435
+[seoultech:0/4] 2024-02-03 05:31:35,620 (trainer:753) INFO: 2epoch:train:11191-12309batch: iter_time=1.755e-04, forward_time=0.120, loss_ctc=56.169, loss_att=32.049, acc=0.808, loss=39.285, backward_time=0.148, grad_norm=69.822, clip=100.000, loss_scale=1.000, optim_step_time=0.032, optim0_lr0=1.707e-04, train_time=0.441
+[seoultech:0/4] 2024-02-03 05:39:49,348 (trainer:753) INFO: 2epoch:train:12310-13428batch: iter_time=1.953e-04, forward_time=0.126, loss_ctc=53.482, loss_att=30.041, acc=0.813, loss=37.073, backward_time=0.166, grad_norm=64.934, clip=100.000, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.763e-04, train_time=0.441
+[seoultech:0/4] 2024-02-03 05:47:50,685 (trainer:753) INFO: 2epoch:train:13429-14547batch: iter_time=1.951e-04, forward_time=0.119, loss_ctc=54.046, loss_att=30.217, acc=0.819, loss=37.366, backward_time=0.151, grad_norm=62.100, clip=100.000, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=1.819e-04, train_time=0.429
+[seoultech:0/4] 2024-02-03 05:55:57,596 (trainer:753) INFO: 2epoch:train:14548-15666batch: iter_time=1.959e-04, forward_time=0.122, loss_ctc=51.440, loss_att=28.623, acc=0.817, loss=35.468, backward_time=0.148, grad_norm=62.304, clip=99.821, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.875e-04, train_time=0.434
+[seoultech:0/4] 2024-02-03 06:04:15,269 (trainer:753) INFO: 2epoch:train:15667-16785batch: iter_time=1.935e-04, forward_time=0.128, loss_ctc=52.978, loss_att=29.330, acc=0.824, loss=36.424, backward_time=0.156, grad_norm=60.344, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.931e-04, train_time=0.444
+[seoultech:0/4] 2024-02-03 06:12:24,352 (trainer:753) INFO: 2epoch:train:16786-17904batch: iter_time=2.155e-04, forward_time=0.130, loss_ctc=50.769, loss_att=27.751, acc=0.823, loss=34.657, backward_time=0.142, grad_norm=58.883, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.984e-04, train_time=0.436
+[seoultech:0/4] 2024-02-03 06:20:39,648 (trainer:753) INFO: 2epoch:train:17905-19023batch: iter_time=2.017e-04, forward_time=0.129, loss_ctc=49.814, loss_att=27.146, acc=0.828, loss=33.946, backward_time=0.147, grad_norm=56.696, clip=99.911, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.979e-04, train_time=0.442
+[seoultech:0/4] 2024-02-03 06:28:46,558 (trainer:753) INFO: 2epoch:train:19024-20142batch: iter_time=1.725e-04, forward_time=0.115, loss_ctc=48.724, loss_att=26.295, acc=0.831, loss=33.024, backward_time=0.143, grad_norm=53.867, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.953e-04, train_time=0.434
+[seoultech:0/4] 2024-02-03 06:36:57,693 (trainer:753) INFO: 2epoch:train:20143-21261batch: iter_time=2.066e-04, forward_time=0.135, loss_ctc=48.476, loss_att=26.041, acc=0.835, loss=32.771, backward_time=0.139, grad_norm=54.359, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.927e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 06:45:01,108 (trainer:753) INFO: 2epoch:train:21262-22380batch: iter_time=2.161e-04, forward_time=0.126, loss_ctc=46.418, loss_att=24.765, acc=0.835, loss=31.261, backward_time=0.135, grad_norm=52.718, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.903e-04, train_time=0.431
+[seoultech:0/4] 2024-02-03 07:02:19,563 (trainer:352) INFO: 2epoch results: [train] iter_time=2.492e-04, forward_time=0.123, loss_ctc=56.957, loss_att=33.214, acc=0.801, loss=40.337, backward_time=0.150, grad_norm=72.753, clip=99.960, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.641e-04, train_time=0.437, time=2 hours, 43 minutes and 30.68 seconds, total_count=44768, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=31.469, cer_ctc=0.194, loss_att=16.101, acc=0.901, cer=0.132, wer=0.333, loss=20.712, time=15 minutes and 41.8 seconds, total_count=5688, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 32.23 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-03 07:02:27,305 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-03 07:02:27,305 (trainer:286) INFO: 3/35epoch started. Estimated time to finish: 4 days, 4 hours and 23 minutes
+[seoultech:0/4] 2024-02-03 07:10:38,692 (trainer:753) INFO: 3epoch:train:1-1119batch: iter_time=9.003e-04, forward_time=0.125, loss_ctc=46.502, loss_att=24.662, acc=0.843, loss=31.214, backward_time=0.135, grad_norm=52.569, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.879e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 07:18:35,034 (trainer:753) INFO: 3epoch:train:1120-2238batch: iter_time=1.381e-04, forward_time=0.106, loss_ctc=45.895, loss_att=24.228, acc=0.845, loss=30.728, backward_time=0.136, grad_norm=52.377, clip=100.000, loss_scale=1.000, optim_step_time=0.028, optim0_lr0=1.856e-04, train_time=0.425
+[seoultech:0/4] 2024-02-03 07:26:43,428 (trainer:753) INFO: 3epoch:train:2239-3357batch: iter_time=1.659e-04, forward_time=0.117, loss_ctc=46.625, loss_att=24.424, acc=0.848, loss=31.084, backward_time=0.151, grad_norm=52.114, clip=99.911, loss_scale=1.000, optim_step_time=0.032, optim0_lr0=1.834e-04, train_time=0.436
+[seoultech:0/4] 2024-02-03 07:34:56,793 (trainer:753) INFO: 3epoch:train:3358-4476batch: iter_time=1.929e-04, forward_time=0.117, loss_ctc=47.092, loss_att=24.533, acc=0.853, loss=31.300, backward_time=0.158, grad_norm=52.694, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.813e-04, train_time=0.440
+[seoultech:0/4] 2024-02-03 07:43:19,053 (trainer:753) INFO: 3epoch:train:4477-5595batch: iter_time=2.098e-04, forward_time=0.126, loss_ctc=44.434, loss_att=23.204, acc=0.848, loss=29.573, backward_time=0.174, grad_norm=51.139, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.792e-04, train_time=0.448
+[seoultech:0/4] 2024-02-03 07:51:22,497 (trainer:753) INFO: 3epoch:train:5596-6714batch: iter_time=1.369e-04, forward_time=0.107, loss_ctc=44.314, loss_att=22.842, acc=0.851, loss=29.283, backward_time=0.131, grad_norm=50.383, clip=100.000, loss_scale=1.000, optim_step_time=0.029, optim0_lr0=1.773e-04, train_time=0.432
+[seoultech:0/4] 2024-02-03 07:59:35,527 (trainer:753) INFO: 3epoch:train:6715-7833batch: iter_time=2.122e-04, forward_time=0.122, loss_ctc=42.901, loss_att=22.176, acc=0.853, loss=28.394, backward_time=0.154, grad_norm=50.188, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.753e-04, train_time=0.440
+[seoultech:0/4] 2024-02-03 08:07:54,363 (trainer:753) INFO: 3epoch:train:7834-8952batch: iter_time=1.990e-04, forward_time=0.119, loss_ctc=43.139, loss_att=22.141, acc=0.854, loss=28.441, backward_time=0.157, grad_norm=50.080, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.735e-04, train_time=0.445
+[seoultech:0/4] 2024-02-03 08:16:08,069 (trainer:753) INFO: 3epoch:train:8953-10071batch: iter_time=2.017e-04, forward_time=0.125, loss_ctc=43.158, loss_att=22.029, acc=0.858, loss=28.368, backward_time=0.146, grad_norm=48.847, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.717e-04, train_time=0.440
+[seoultech:0/4] 2024-02-03 08:24:23,203 (trainer:753) INFO: 3epoch:train:10072-11190batch: iter_time=2.348e-04, forward_time=0.135, loss_ctc=42.163, loss_att=21.448, acc=0.858, loss=27.662, backward_time=0.158, grad_norm=48.551, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.699e-04, train_time=0.442
+[seoultech:0/4] 2024-02-03 08:32:30,802 (trainer:753) INFO: 3epoch:train:11191-12309batch: iter_time=2.082e-04, forward_time=0.132, loss_ctc=40.658, loss_att=20.641, acc=0.857, loss=26.646, backward_time=0.140, grad_norm=46.994, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.683e-04, train_time=0.435
+[seoultech:0/4] 2024-02-03 08:40:42,213 (trainer:753) INFO: 3epoch:train:12310-13428batch: iter_time=1.961e-04, forward_time=0.124, loss_ctc=41.324, loss_att=20.824, acc=0.860, loss=26.974, backward_time=0.161, grad_norm=47.627, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.666e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 08:48:46,870 (trainer:753) INFO: 3epoch:train:13429-14547batch: iter_time=1.909e-04, forward_time=0.128, loss_ctc=41.519, loss_att=20.947, acc=0.864, loss=27.119, backward_time=0.130, grad_norm=47.631, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.650e-04, train_time=0.432
+[seoultech:0/4] 2024-02-03 08:56:51,439 (trainer:753) INFO: 3epoch:train:14548-15666batch: iter_time=1.872e-04, forward_time=0.123, loss_ctc=41.632, loss_att=20.920, acc=0.865, loss=27.133, backward_time=0.138, grad_norm=47.744, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.635e-04, train_time=0.432
+[seoultech:0/4] 2024-02-03 09:05:06,582 (trainer:753) INFO: 3epoch:train:15667-16785batch: iter_time=2.038e-04, forward_time=0.133, loss_ctc=39.666, loss_att=19.979, acc=0.861, loss=25.885, backward_time=0.139, grad_norm=46.749, clip=99.643, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.620e-04, train_time=0.442
+[seoultech:0/4] 2024-02-03 09:13:20,293 (trainer:753) INFO: 3epoch:train:16786-17904batch: iter_time=1.658e-04, forward_time=0.113, loss_ctc=40.101, loss_att=20.090, acc=0.865, loss=26.093, backward_time=0.144, grad_norm=46.591, clip=99.821, loss_scale=1.000, optim_step_time=0.032, optim0_lr0=1.605e-04, train_time=0.441
+[seoultech:0/4] 2024-02-03 09:21:24,464 (trainer:753) INFO: 3epoch:train:17905-19023batch: iter_time=1.943e-04, forward_time=0.128, loss_ctc=38.985, loss_att=19.493, acc=0.866, loss=25.341, backward_time=0.129, grad_norm=45.256, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.591e-04, train_time=0.432
+[seoultech:0/4] 2024-02-03 09:29:27,347 (trainer:753) INFO: 3epoch:train:19024-20142batch: iter_time=1.646e-04, forward_time=0.113, loss_ctc=38.835, loss_att=19.344, acc=0.865, loss=25.192, backward_time=0.132, grad_norm=44.840, clip=99.821, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=1.577e-04, train_time=0.431
+[seoultech:0/4] 2024-02-03 09:37:39,597 (trainer:753) INFO: 3epoch:train:20143-21261batch: iter_time=6.929e-04, forward_time=0.123, loss_ctc=38.974, loss_att=19.376, acc=0.868, loss=25.255, backward_time=0.150, grad_norm=45.707, clip=99.732, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.563e-04, train_time=0.439
+[seoultech:0/4] 2024-02-03 09:45:49,876 (trainer:753) INFO: 3epoch:train:21262-22380batch: iter_time=1.760e-04, forward_time=0.119, loss_ctc=38.485, loss_att=19.139, acc=0.868, loss=24.943, backward_time=0.153, grad_norm=45.779, clip=99.911, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=1.550e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 10:02:53,312 (trainer:352) INFO: 3epoch results: [train] iter_time=2.485e-04, forward_time=0.122, loss_ctc=42.284, loss_att=21.599, acc=0.858, loss=27.804, backward_time=0.146, grad_norm=48.693, clip=99.879, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.699e-04, train_time=0.437, time=2 hours, 43 minutes and 27.32 seconds, total_count=67152, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=25.982, cer_ctc=0.166, loss_att=12.299, acc=0.921, cer=0.105, wer=0.281, loss=16.404, time=15 minutes and 45.66 seconds, total_count=8532, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 13.03 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-03 10:03:01,149 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-03 10:03:01,149 (trainer:286) INFO: 4/35epoch started. Estimated time to finish: 4 days, 59 minutes and 58.99 seconds
+[seoultech:0/4] 2024-02-03 10:11:21,697 (trainer:753) INFO: 4epoch:train:1-1119batch: iter_time=5.426e-04, forward_time=0.117, loss_ctc=37.515, loss_att=18.595, acc=0.871, loss=24.271, backward_time=0.161, grad_norm=44.688, clip=99.643, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.537e-04, train_time=0.446
+[seoultech:0/4] 2024-02-03 10:19:39,190 (trainer:753) INFO: 4epoch:train:1120-2238batch: iter_time=1.708e-04, forward_time=0.119, loss_ctc=37.530, loss_att=18.489, acc=0.872, loss=24.202, backward_time=0.158, grad_norm=44.743, clip=99.821, loss_scale=1.000, optim_step_time=0.032, optim0_lr0=1.525e-04, train_time=0.444
+[seoultech:0/4] 2024-02-03 10:27:52,128 (trainer:753) INFO: 4epoch:train:2239-3357batch: iter_time=1.906e-04, forward_time=0.131, loss_ctc=38.167, loss_att=18.819, acc=0.875, loss=24.623, backward_time=0.137, grad_norm=45.586, clip=99.732, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.512e-04, train_time=0.440
+[seoultech:0/4] 2024-02-03 10:36:01,198 (trainer:753) INFO: 4epoch:train:3358-4476batch: iter_time=2.033e-04, forward_time=0.132, loss_ctc=37.194, loss_att=18.312, acc=0.871, loss=23.977, backward_time=0.128, grad_norm=46.376, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.500e-04, train_time=0.436
+[seoultech:0/4] 2024-02-03 10:44:13,353 (trainer:753) INFO: 4epoch:train:4477-5595batch: iter_time=2.484e-04, forward_time=0.122, loss_ctc=38.666, loss_att=18.949, acc=0.877, loss=24.864, backward_time=0.142, grad_norm=45.205, clip=99.911, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.489e-04, train_time=0.439
+[seoultech:0/4] 2024-02-03 10:52:30,190 (trainer:753) INFO: 4epoch:train:5596-6714batch: iter_time=2.002e-04, forward_time=0.129, loss_ctc=37.290, loss_att=18.264, acc=0.875, loss=23.972, backward_time=0.152, grad_norm=44.065, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.477e-04, train_time=0.443
+[seoultech:0/4] 2024-02-03 11:00:33,011 (trainer:753) INFO: 4epoch:train:6715-7833batch: iter_time=2.007e-04, forward_time=0.130, loss_ctc=38.194, loss_att=18.714, acc=0.877, loss=24.558, backward_time=0.128, grad_norm=45.099, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.466e-04, train_time=0.431
+[seoultech:0/4] 2024-02-03 11:08:40,702 (trainer:753) INFO: 4epoch:train:7834-8952batch: iter_time=1.993e-04, forward_time=0.129, loss_ctc=37.280, loss_att=18.174, acc=0.877, loss=23.906, backward_time=0.130, grad_norm=44.200, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.455e-04, train_time=0.435
+[seoultech:0/4] 2024-02-03 11:16:52,948 (trainer:753) INFO: 4epoch:train:8953-10071batch: iter_time=1.910e-04, forward_time=0.125, loss_ctc=36.374, loss_att=17.760, acc=0.875, loss=23.344, backward_time=0.143, grad_norm=44.695, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.445e-04, train_time=0.439
+[seoultech:0/4] 2024-02-03 11:25:03,786 (trainer:753) INFO: 4epoch:train:10072-11190batch: iter_time=2.351e-04, forward_time=0.129, loss_ctc=36.469, loss_att=17.809, acc=0.876, loss=23.407, backward_time=0.141, grad_norm=45.807, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.434e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 11:33:10,184 (trainer:753) INFO: 4epoch:train:11191-12309batch: iter_time=2.194e-04, forward_time=0.130, loss_ctc=35.553, loss_att=17.263, acc=0.876, loss=22.750, backward_time=0.135, grad_norm=42.778, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.424e-04, train_time=0.434
+[seoultech:0/4] 2024-02-03 11:41:13,666 (trainer:753) INFO: 4epoch:train:12310-13428batch: iter_time=2.089e-04, forward_time=0.124, loss_ctc=36.712, loss_att=17.806, acc=0.881, loss=23.478, backward_time=0.144, grad_norm=42.194, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.414e-04, train_time=0.431
+[seoultech:0/4] 2024-02-03 11:49:15,840 (trainer:753) INFO: 4epoch:train:13429-14547batch: iter_time=2.195e-04, forward_time=0.132, loss_ctc=35.693, loss_att=17.346, acc=0.879, loss=22.850, backward_time=0.133, grad_norm=42.429, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.404e-04, train_time=0.430
+[seoultech:0/4] 2024-02-03 11:57:25,150 (trainer:753) INFO: 4epoch:train:14548-15666batch: iter_time=2.089e-04, forward_time=0.133, loss_ctc=36.629, loss_att=17.723, acc=0.881, loss=23.395, backward_time=0.132, grad_norm=43.865, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.395e-04, train_time=0.436
+[seoultech:0/4] 2024-02-03 12:05:39,701 (trainer:753) INFO: 4epoch:train:15667-16785batch: iter_time=2.090e-04, forward_time=0.134, loss_ctc=35.920, loss_att=17.392, acc=0.881, loss=22.950, backward_time=0.139, grad_norm=43.052, clip=99.643, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.385e-04, train_time=0.441
+[seoultech:0/4] 2024-02-03 12:13:55,439 (trainer:753) INFO: 4epoch:train:16786-17904batch: iter_time=1.996e-04, forward_time=0.121, loss_ctc=35.246, loss_att=17.059, acc=0.881, loss=22.515, backward_time=0.157, grad_norm=41.988, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.376e-04, train_time=0.442
+[seoultech:0/4] 2024-02-03 12:22:13,077 (trainer:753) INFO: 4epoch:train:17905-19023batch: iter_time=2.058e-04, forward_time=0.122, loss_ctc=35.131, loss_att=17.035, acc=0.881, loss=22.464, backward_time=0.150, grad_norm=42.428, clip=99.553, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.367e-04, train_time=0.444
+[seoultech:0/4] 2024-02-03 12:30:27,577 (trainer:753) INFO: 4epoch:train:19024-20142batch: iter_time=2.223e-04, forward_time=0.128, loss_ctc=35.393, loss_att=17.135, acc=0.884, loss=22.613, backward_time=0.164, grad_norm=41.378, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.358e-04, train_time=0.441
+[seoultech:0/4] 2024-02-03 12:38:46,488 (trainer:753) INFO: 4epoch:train:20143-21261batch: iter_time=1.909e-04, forward_time=0.119, loss_ctc=34.805, loss_att=16.818, acc=0.881, loss=22.214, backward_time=0.173, grad_norm=42.189, clip=100.000, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.350e-04, train_time=0.445
+[seoultech:0/4] 2024-02-03 12:46:57,284 (trainer:753) INFO: 4epoch:train:21262-22380batch: iter_time=2.132e-04, forward_time=0.134, loss_ctc=34.955, loss_att=16.888, acc=0.883, loss=22.308, backward_time=0.134, grad_norm=42.690, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.341e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 13:03:55,743 (trainer:352) INFO: 4epoch results: [train] iter_time=2.240e-04, forward_time=0.127, loss_ctc=36.526, loss_att=17.813, acc=0.878, loss=23.427, backward_time=0.144, grad_norm=43.771, clip=99.812, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.433e-04, train_time=0.439, time=2 hours, 44 minutes and 0.87 seconds, total_count=89536, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=23.319, cer_ctc=0.151, loss_att=10.757, acc=0.930, cer=0.093, wer=0.257, loss=14.526, time=15 minutes and 44.01 seconds, total_count=11376, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 9.71 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-03 13:04:04,090 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-03 13:04:04,091 (trainer:286) INFO: 5/35epoch started. Estimated time to finish: 3 days, 21 hours and 51 minutes
+[seoultech:0/4] 2024-02-03 13:12:28,302 (trainer:753) INFO: 5epoch:train:1-1119batch: iter_time=8.151e-04, forward_time=0.130, loss_ctc=33.691, loss_att=16.237, acc=0.886, loss=21.473, backward_time=0.146, grad_norm=41.991, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.333e-04, train_time=0.450
+[seoultech:0/4] 2024-02-03 13:20:44,774 (trainer:753) INFO: 5epoch:train:1120-2238batch: iter_time=2.058e-04, forward_time=0.127, loss_ctc=34.548, loss_att=16.580, acc=0.887, loss=21.971, backward_time=0.153, grad_norm=42.616, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.324e-04, train_time=0.443
+[seoultech:0/4] 2024-02-03 13:29:03,240 (trainer:753) INFO: 5epoch:train:2239-3357batch: iter_time=1.970e-04, forward_time=0.126, loss_ctc=33.950, loss_att=16.352, acc=0.885, loss=21.632, backward_time=0.152, grad_norm=42.528, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.316e-04, train_time=0.445
+[seoultech:0/4] 2024-02-03 13:37:13,772 (trainer:753) INFO: 5epoch:train:3358-4476batch: iter_time=2.043e-04, forward_time=0.128, loss_ctc=33.456, loss_att=16.103, acc=0.884, loss=21.309, backward_time=0.139, grad_norm=42.418, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.308e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 13:45:27,826 (trainer:753) INFO: 5epoch:train:4477-5595batch: iter_time=2.085e-04, forward_time=0.123, loss_ctc=34.343, loss_att=16.495, acc=0.889, loss=21.849, backward_time=0.156, grad_norm=41.721, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.301e-04, train_time=0.441
+[seoultech:0/4] 2024-02-03 13:53:46,138 (trainer:753) INFO: 5epoch:train:5596-6714batch: iter_time=2.019e-04, forward_time=0.132, loss_ctc=33.443, loss_att=16.072, acc=0.886, loss=21.283, backward_time=0.156, grad_norm=42.434, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.293e-04, train_time=0.444
+[seoultech:0/4] 2024-02-03 14:01:50,460 (trainer:753) INFO: 5epoch:train:6715-7833batch: iter_time=1.862e-04, forward_time=0.126, loss_ctc=33.664, loss_att=16.195, acc=0.886, loss=21.435, backward_time=0.137, grad_norm=41.922, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.286e-04, train_time=0.432
+[seoultech:0/4] 2024-02-03 14:09:49,255 (trainer:753) INFO: 5epoch:train:7834-8952batch: iter_time=1.645e-04, forward_time=0.113, loss_ctc=33.774, loss_att=16.286, acc=0.888, loss=21.532, backward_time=0.133, grad_norm=41.542, clip=99.821, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=1.278e-04, train_time=0.427
+[seoultech:0/4] 2024-02-03 14:17:57,442 (trainer:753) INFO: 5epoch:train:8953-10071batch: iter_time=1.948e-04, forward_time=0.119, loss_ctc=33.878, loss_att=16.231, acc=0.890, loss=21.525, backward_time=0.133, grad_norm=42.460, clip=99.643, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.271e-04, train_time=0.435
+[seoultech:0/4] 2024-02-03 14:26:08,570 (trainer:753) INFO: 5epoch:train:10072-11190batch: iter_time=2.054e-04, forward_time=0.125, loss_ctc=33.461, loss_att=16.056, acc=0.887, loss=21.278, backward_time=0.149, grad_norm=41.760, clip=99.821, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=1.264e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 14:34:21,006 (trainer:753) INFO: 5epoch:train:11191-12309batch: iter_time=2.091e-04, forward_time=0.123, loss_ctc=33.857, loss_att=16.221, acc=0.892, loss=21.512, backward_time=0.160, grad_norm=40.493, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.257e-04, train_time=0.439
+[seoultech:0/4] 2024-02-03 14:42:32,491 (trainer:753) INFO: 5epoch:train:12310-13428batch: iter_time=1.793e-04, forward_time=0.120, loss_ctc=33.029, loss_att=15.835, acc=0.889, loss=20.993, backward_time=0.152, grad_norm=40.604, clip=99.732, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=1.250e-04, train_time=0.439
+[seoultech:0/4] 2024-02-03 14:50:42,590 (trainer:753) INFO: 5epoch:train:13429-14547batch: iter_time=1.781e-04, forward_time=0.126, loss_ctc=31.714, loss_att=15.212, acc=0.886, loss=20.162, backward_time=0.131, grad_norm=40.436, clip=99.643, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.243e-04, train_time=0.437
+[seoultech:0/4] 2024-02-03 14:58:48,161 (trainer:753) INFO: 5epoch:train:14548-15666batch: iter_time=1.792e-04, forward_time=0.127, loss_ctc=33.218, loss_att=15.886, acc=0.891, loss=21.086, backward_time=0.141, grad_norm=41.294, clip=99.821, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.237e-04, train_time=0.433
+[seoultech:0/4] 2024-02-03 15:06:52,617 (trainer:753) INFO: 5epoch:train:15667-16785batch: iter_time=1.728e-04, forward_time=0.119, loss_ctc=31.497, loss_att=15.086, acc=0.886, loss=20.010, backward_time=0.145, grad_norm=39.699, clip=99.643, loss_scale=1.000, optim_step_time=0.032, optim0_lr0=1.230e-04, train_time=0.432
+[seoultech:0/4] 2024-02-03 15:15:04,750 (trainer:753) INFO: 5epoch:train:16786-17904batch: iter_time=2.037e-04, forward_time=0.135, loss_ctc=32.580, loss_att=15.615, acc=0.891, loss=20.704, backward_time=0.143, grad_norm=40.975, clip=99.911, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=1.224e-04, train_time=0.439
+[seoultech:0/4] 2024-02-03 15:23:15,329 (trainer:753) INFO: 5epoch:train:17905-19023batch: iter_time=1.937e-04, forward_time=0.118, loss_ctc=32.765, loss_att=15.580, acc=0.891, loss=20.736, backward_time=0.142, grad_norm=39.444, clip=100.000, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.217e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 15:31:22,221 (trainer:753) INFO: 5epoch:train:19024-20142batch: iter_time=1.681e-04, forward_time=0.121, loss_ctc=32.151, loss_att=15.290, acc=0.890, loss=20.348, backward_time=0.133, grad_norm=39.514, clip=99.821, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=1.211e-04, train_time=0.435
+[seoultech:0/4] 2024-02-03 15:39:37,348 (trainer:753) INFO: 5epoch:train:20143-21261batch: iter_time=1.843e-04, forward_time=0.118, loss_ctc=31.926, loss_att=15.159, acc=0.889, loss=20.189, backward_time=0.149, grad_norm=40.479, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.205e-04, train_time=0.442
+[seoultech:0/4] 2024-02-03 15:47:51,253 (trainer:753) INFO: 5epoch:train:21262-22380batch: iter_time=2.046e-04, forward_time=0.133, loss_ctc=33.422, loss_att=15.929, acc=0.893, loss=21.177, backward_time=0.137, grad_norm=40.607, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.199e-04, train_time=0.441
+[seoultech:0/4] 2024-02-03 16:04:00,153 (trainer:352) INFO: 5epoch results: [train] iter_time=2.228e-04, forward_time=0.125, loss_ctc=33.204, loss_att=15.914, acc=0.888, loss=21.101, backward_time=0.144, grad_norm=41.247, clip=99.803, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.262e-04, train_time=0.438, time=2 hours, 43 minutes and 51.71 seconds, total_count=111920, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=22.153, cer_ctc=0.144, loss_att=10.090, acc=0.933, cer=0.089, wer=0.247, loss=13.708, time=14 minutes and 44.13 seconds, total_count=14220, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 20.21 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-03 16:04:08,950 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-03 16:04:08,950 (trainer:286) INFO: 6/35epoch started. Estimated time to finish: 3 days, 18 hours and 40 minutes
+[seoultech:0/4] 2024-02-03 16:12:34,717 (trainer:753) INFO: 6epoch:train:1-1119batch: iter_time=9.593e-04, forward_time=0.119, loss_ctc=30.704, loss_att=14.612, acc=0.891, loss=19.440, backward_time=0.148, grad_norm=38.634, clip=99.643, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.193e-04, train_time=0.451
+[seoultech:0/4] 2024-02-03 16:20:52,053 (trainer:753) INFO: 6epoch:train:1120-2238batch: iter_time=1.979e-04, forward_time=0.126, loss_ctc=31.511, loss_att=14.953, acc=0.893, loss=19.920, backward_time=0.142, grad_norm=40.151, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.187e-04, train_time=0.444
+[seoultech:0/4] 2024-02-03 16:28:58,492 (trainer:753) INFO: 6epoch:train:2239-3357batch: iter_time=1.936e-04, forward_time=0.119, loss_ctc=30.813, loss_att=14.717, acc=0.890, loss=19.546, backward_time=0.137, grad_norm=40.460, clip=99.643, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=1.181e-04, train_time=0.434
+[seoultech:0/4] 2024-02-03 16:37:12,829 (trainer:753) INFO: 6epoch:train:3358-4476batch: iter_time=1.836e-04, forward_time=0.118, loss_ctc=32.118, loss_att=15.245, acc=0.895, loss=20.307, backward_time=0.147, grad_norm=40.565, clip=99.821, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.175e-04, train_time=0.441
+[seoultech:0/4] 2024-02-03 16:45:22,493 (trainer:753) INFO: 6epoch:train:4477-5595batch: iter_time=1.962e-04, forward_time=0.131, loss_ctc=31.896, loss_att=15.172, acc=0.893, loss=20.189, backward_time=0.146, grad_norm=40.752, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.170e-04, train_time=0.437
+[seoultech:0/4] 2024-02-03 16:53:29,692 (trainer:753) INFO: 6epoch:train:5596-6714batch: iter_time=2.347e-04, forward_time=0.134, loss_ctc=31.306, loss_att=14.888, acc=0.896, loss=19.814, backward_time=0.132, grad_norm=39.168, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.164e-04, train_time=0.434
+[seoultech:0/4] 2024-02-03 17:01:37,722 (trainer:753) INFO: 6epoch:train:6715-7833batch: iter_time=1.867e-04, forward_time=0.114, loss_ctc=31.529, loss_att=14.986, acc=0.897, loss=19.949, backward_time=0.133, grad_norm=39.234, clip=99.643, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.159e-04, train_time=0.435
+[seoultech:0/4] 2024-02-03 17:09:42,193 (trainer:753) INFO: 6epoch:train:7834-8952batch: iter_time=1.979e-04, forward_time=0.128, loss_ctc=32.229, loss_att=15.328, acc=0.898, loss=20.398, backward_time=0.136, grad_norm=40.722, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.153e-04, train_time=0.432
+[seoultech:0/4] 2024-02-03 17:17:50,073 (trainer:753) INFO: 6epoch:train:8953-10071batch: iter_time=1.961e-04, forward_time=0.129, loss_ctc=30.921, loss_att=14.699, acc=0.895, loss=19.565, backward_time=0.165, grad_norm=40.329, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.148e-04, train_time=0.435
+[seoultech:0/4] 2024-02-03 17:25:46,886 (trainer:753) INFO: 6epoch:train:10072-11190batch: iter_time=1.481e-04, forward_time=0.108, loss_ctc=30.586, loss_att=14.562, acc=0.895, loss=19.369, backward_time=0.145, grad_norm=39.992, clip=99.643, loss_scale=1.000, optim_step_time=0.029, optim0_lr0=1.143e-04, train_time=0.426
+[seoultech:0/4] 2024-02-03 17:33:54,427 (trainer:753) INFO: 6epoch:train:11191-12309batch: iter_time=2.115e-04, forward_time=0.127, loss_ctc=30.439, loss_att=14.500, acc=0.893, loss=19.282, backward_time=0.130, grad_norm=39.033, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.137e-04, train_time=0.435
+[seoultech:0/4] 2024-02-03 17:41:59,518 (trainer:753) INFO: 6epoch:train:12310-13428batch: iter_time=1.998e-04, forward_time=0.132, loss_ctc=30.918, loss_att=14.628, acc=0.896, loss=19.515, backward_time=0.144, grad_norm=39.021, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.132e-04, train_time=0.433
+[seoultech:0/4] 2024-02-03 17:50:13,204 (trainer:753) INFO: 6epoch:train:13429-14547batch: iter_time=2.405e-04, forward_time=0.131, loss_ctc=29.912, loss_att=14.208, acc=0.893, loss=18.919, backward_time=0.155, grad_norm=38.920, clip=99.464, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.127e-04, train_time=0.440
+[seoultech:0/4] 2024-02-03 17:58:22,548 (trainer:753) INFO: 6epoch:train:14548-15666batch: iter_time=2.122e-04, forward_time=0.133, loss_ctc=31.556, loss_att=14.967, acc=0.899, loss=19.944, backward_time=0.145, grad_norm=39.530, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.122e-04, train_time=0.436
+[seoultech:0/4] 2024-02-03 18:06:29,379 (trainer:753) INFO: 6epoch:train:15667-16785batch: iter_time=1.926e-04, forward_time=0.124, loss_ctc=30.507, loss_att=14.389, acc=0.896, loss=19.225, backward_time=0.135, grad_norm=38.346, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.117e-04, train_time=0.434
+[seoultech:0/4] 2024-02-03 18:14:46,228 (trainer:753) INFO: 6epoch:train:16786-17904batch: iter_time=2.005e-04, forward_time=0.129, loss_ctc=30.492, loss_att=14.501, acc=0.894, loss=19.298, backward_time=0.152, grad_norm=40.175, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.113e-04, train_time=0.443
+[seoultech:0/4] 2024-02-03 18:23:03,138 (trainer:753) INFO: 6epoch:train:17905-19023batch: iter_time=1.745e-04, forward_time=0.115, loss_ctc=31.718, loss_att=14.925, acc=0.898, loss=19.963, backward_time=0.160, grad_norm=40.574, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.108e-04, train_time=0.443
+[seoultech:0/4] 2024-02-03 18:31:18,843 (trainer:753) INFO: 6epoch:train:19024-20142batch: iter_time=1.895e-04, forward_time=0.125, loss_ctc=30.017, loss_att=14.196, acc=0.895, loss=18.942, backward_time=0.148, grad_norm=39.168, clip=99.732, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.103e-04, train_time=0.442
+[seoultech:0/4] 2024-02-03 18:39:34,396 (trainer:753) INFO: 6epoch:train:20143-21261batch: iter_time=1.926e-04, forward_time=0.124, loss_ctc=30.647, loss_att=14.533, acc=0.897, loss=19.367, backward_time=0.143, grad_norm=39.880, clip=99.643, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.098e-04, train_time=0.442
+[seoultech:0/4] 2024-02-03 18:47:46,429 (trainer:753) INFO: 6epoch:train:21262-22380batch: iter_time=2.258e-04, forward_time=0.136, loss_ctc=30.727, loss_att=14.483, acc=0.896, loss=19.356, backward_time=0.137, grad_norm=40.009, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.094e-04, train_time=0.439
+[seoultech:0/4] 2024-02-03 19:03:36,898 (trainer:352) INFO: 6epoch results: [train] iter_time=2.367e-04, forward_time=0.125, loss_ctc=31.017, loss_att=14.720, acc=0.895, loss=19.609, backward_time=0.144, grad_norm=39.733, clip=99.790, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.141e-04, train_time=0.438, time=2 hours, 43 minutes and 42.1 seconds, total_count=134304, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=20.870, cer_ctc=0.138, loss_att=9.526, acc=0.937, cer=0.085, wer=0.237, loss=12.929, time=14 minutes and 34.41 seconds, total_count=17064, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 11.43 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-03 19:03:45,530 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-03 19:03:45,531 (trainer:286) INFO: 7/35epoch started. Estimated time to finish: 3 days, 15 hours and 30 minutes
+[seoultech:0/4] 2024-02-03 19:11:56,211 (trainer:753) INFO: 7epoch:train:1-1119batch: iter_time=9.454e-04, forward_time=0.129, loss_ctc=28.578, loss_att=13.555, acc=0.896, loss=18.062, backward_time=0.126, grad_norm=37.590, clip=99.643, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.089e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 19:20:07,853 (trainer:753) INFO: 7epoch:train:1120-2238batch: iter_time=1.752e-04, forward_time=0.126, loss_ctc=28.756, loss_att=13.571, acc=0.895, loss=18.127, backward_time=0.149, grad_norm=38.617, clip=99.643, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.085e-04, train_time=0.439
+[seoultech:0/4] 2024-02-03 19:28:23,969 (trainer:753) INFO: 7epoch:train:2239-3357batch: iter_time=2.046e-04, forward_time=0.132, loss_ctc=29.274, loss_att=13.919, acc=0.898, loss=18.526, backward_time=0.157, grad_norm=38.890, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.080e-04, train_time=0.443
+[seoultech:0/4] 2024-02-03 19:36:34,074 (trainer:753) INFO: 7epoch:train:3358-4476batch: iter_time=1.961e-04, forward_time=0.134, loss_ctc=29.948, loss_att=14.136, acc=0.900, loss=18.880, backward_time=0.132, grad_norm=38.010, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.076e-04, train_time=0.437
+[seoultech:0/4] 2024-02-03 19:44:44,042 (trainer:753) INFO: 7epoch:train:4477-5595batch: iter_time=1.991e-04, forward_time=0.127, loss_ctc=28.408, loss_att=13.461, acc=0.896, loss=17.945, backward_time=0.161, grad_norm=38.407, clip=99.464, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.072e-04, train_time=0.437
+[seoultech:0/4] 2024-02-03 19:52:56,236 (trainer:753) INFO: 7epoch:train:5596-6714batch: iter_time=1.741e-04, forward_time=0.116, loss_ctc=29.860, loss_att=14.133, acc=0.900, loss=18.851, backward_time=0.146, grad_norm=39.684, clip=99.732, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=1.067e-04, train_time=0.439
+[seoultech:0/4] 2024-02-03 20:01:02,359 (trainer:753) INFO: 7epoch:train:6715-7833batch: iter_time=2.029e-04, forward_time=0.134, loss_ctc=30.008, loss_att=14.155, acc=0.901, loss=18.911, backward_time=0.145, grad_norm=38.883, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.063e-04, train_time=0.434
+[seoultech:0/4] 2024-02-03 20:09:05,466 (trainer:753) INFO: 7epoch:train:7834-8952batch: iter_time=2.245e-04, forward_time=0.134, loss_ctc=29.160, loss_att=13.789, acc=0.899, loss=18.400, backward_time=0.134, grad_norm=37.800, clip=99.821, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=1.059e-04, train_time=0.431
+[seoultech:0/4] 2024-02-03 20:17:26,609 (trainer:753) INFO: 7epoch:train:8953-10071batch: iter_time=2.336e-04, forward_time=0.129, loss_ctc=28.260, loss_att=13.384, acc=0.898, loss=17.847, backward_time=0.165, grad_norm=37.237, clip=99.553, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.055e-04, train_time=0.447
+[seoultech:0/4] 2024-02-03 20:25:31,201 (trainer:753) INFO: 7epoch:train:10072-11190batch: iter_time=2.043e-04, forward_time=0.126, loss_ctc=30.226, loss_att=14.238, acc=0.904, loss=19.034, backward_time=0.142, grad_norm=37.860, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.051e-04, train_time=0.432
+[seoultech:0/4] 2024-02-03 20:33:49,157 (trainer:753) INFO: 7epoch:train:11191-12309batch: iter_time=2.205e-04, forward_time=0.131, loss_ctc=29.387, loss_att=13.782, acc=0.898, loss=18.463, backward_time=0.169, grad_norm=39.585, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.047e-04, train_time=0.444
+[seoultech:0/4] 2024-02-03 20:41:57,510 (trainer:753) INFO: 7epoch:train:12310-13428batch: iter_time=2.526e-04, forward_time=0.115, loss_ctc=29.867, loss_att=14.086, acc=0.900, loss=18.820, backward_time=0.135, grad_norm=39.888, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.043e-04, train_time=0.436
+[seoultech:0/4] 2024-02-03 20:50:12,121 (trainer:753) INFO: 7epoch:train:13429-14547batch: iter_time=1.760e-04, forward_time=0.121, loss_ctc=30.280, loss_att=14.250, acc=0.902, loss=19.059, backward_time=0.149, grad_norm=39.935, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=1.039e-04, train_time=0.441
+[seoultech:0/4] 2024-02-03 20:58:23,016 (trainer:753) INFO: 7epoch:train:14548-15666batch: iter_time=2.070e-04, forward_time=0.131, loss_ctc=29.018, loss_att=13.617, acc=0.898, loss=18.237, backward_time=0.137, grad_norm=38.316, clip=99.643, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=1.035e-04, train_time=0.438
+[seoultech:0/4] 2024-02-03 21:06:39,168 (trainer:753) INFO: 7epoch:train:15667-16785batch: iter_time=2.007e-04, forward_time=0.124, loss_ctc=30.539, loss_att=14.352, acc=0.903, loss=19.208, backward_time=0.135, grad_norm=40.872, clip=99.911, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=1.031e-04, train_time=0.443
+[seoultech:0/4] 2024-02-03 21:14:43,279 (trainer:753) INFO: 7epoch:train:16786-17904batch: iter_time=1.869e-04, forward_time=0.119, loss_ctc=29.920, loss_att=14.146, acc=0.903, loss=18.879, backward_time=0.136, grad_norm=38.941, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.027e-04, train_time=0.432
+[seoultech:0/4] 2024-02-03 21:22:57,375 (trainer:753) INFO: 7epoch:train:17905-19023batch: iter_time=2.096e-04, forward_time=0.136, loss_ctc=28.665, loss_att=13.492, acc=0.900, loss=18.044, backward_time=0.133, grad_norm=38.054, clip=99.732, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=1.023e-04, train_time=0.441
+[seoultech:0/4] 2024-02-03 21:31:15,695 (trainer:753) INFO: 7epoch:train:19024-20142batch: iter_time=1.974e-04, forward_time=0.131, loss_ctc=28.688, loss_att=13.561, acc=0.899, loss=18.099, backward_time=0.155, grad_norm=38.573, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.020e-04, train_time=0.445
+[seoultech:0/4] 2024-02-03 21:39:31,642 (trainer:753) INFO: 7epoch:train:20143-21261batch: iter_time=2.007e-04, forward_time=0.130, loss_ctc=29.932, loss_att=14.056, acc=0.902, loss=18.819, backward_time=0.158, grad_norm=38.941, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.016e-04, train_time=0.442
+[seoultech:0/4] 2024-02-03 21:47:45,300 (trainer:753) INFO: 7epoch:train:21262-22380batch: iter_time=1.998e-04, forward_time=0.127, loss_ctc=29.935, loss_att=14.075, acc=0.904, loss=18.833, backward_time=0.141, grad_norm=38.611, clip=99.911, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=1.012e-04, train_time=0.440
+[seoultech:0/4] 2024-02-03 22:04:21,340 (trainer:352) INFO: 7epoch results: [train] iter_time=2.405e-04, forward_time=0.128, loss_ctc=29.414, loss_att=13.878, acc=0.900, loss=18.539, backward_time=0.145, grad_norm=38.734, clip=99.777, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.049e-04, train_time=0.439, time=2 hours, 44 minutes and 4.07 seconds, total_count=156688, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=20.002, cer_ctc=0.133, loss_att=9.095, acc=0.939, cer=0.081, wer=0.231, loss=12.367, time=15 minutes and 16.03 seconds, total_count=19908, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 15.71 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-03 22:04:29,619 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-03 22:04:29,620 (trainer:286) INFO: 8/35epoch started. Estimated time to finish: 3 days, 12 hours and 28 minutes
+[seoultech:0/4] 2024-02-03 22:12:45,490 (trainer:753) INFO: 8epoch:train:1-1119batch: iter_time=9.590e-04, forward_time=0.133, loss_ctc=28.032, loss_att=13.229, acc=0.902, loss=17.670, backward_time=0.133, grad_norm=37.935, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.009e-04, train_time=0.442
+[seoultech:0/4] 2024-02-03 22:20:59,092 (trainer:753) INFO: 8epoch:train:1120-2238batch: iter_time=2.393e-04, forward_time=0.114, loss_ctc=27.439, loss_att=12.895, acc=0.900, loss=17.258, backward_time=0.156, grad_norm=38.658, clip=99.553, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=1.005e-04, train_time=0.440
+[seoultech:0/4] 2024-02-03 22:29:16,873 (trainer:753) INFO: 8epoch:train:2239-3357batch: iter_time=2.097e-04, forward_time=0.129, loss_ctc=28.513, loss_att=13.432, acc=0.903, loss=17.956, backward_time=0.163, grad_norm=38.896, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=1.002e-04, train_time=0.444
+[seoultech:0/4] 2024-02-03 22:37:33,304 (trainer:753) INFO: 8epoch:train:3358-4476batch: iter_time=1.988e-04, forward_time=0.119, loss_ctc=27.939, loss_att=13.137, acc=0.900, loss=17.577, backward_time=0.136, grad_norm=38.160, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=9.981e-05, train_time=0.443
+[seoultech:0/4] 2024-02-03 22:45:51,209 (trainer:753) INFO: 8epoch:train:4477-5595batch: iter_time=2.006e-04, forward_time=0.122, loss_ctc=28.556, loss_att=13.413, acc=0.904, loss=17.956, backward_time=0.138, grad_norm=38.844, clip=99.732, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=9.947e-05, train_time=0.444
+[seoultech:0/4] 2024-02-03 22:53:59,732 (trainer:753) INFO: 8epoch:train:5596-6714batch: iter_time=1.217e-04, forward_time=0.105, loss_ctc=27.816, loss_att=13.086, acc=0.901, loss=17.505, backward_time=0.127, grad_norm=38.388, clip=99.374, loss_scale=1.000, optim_step_time=0.027, optim0_lr0=9.912e-05, train_time=0.436
+[seoultech:0/4] 2024-02-03 23:02:08,186 (trainer:753) INFO: 8epoch:train:6715-7833batch: iter_time=1.783e-04, forward_time=0.118, loss_ctc=28.650, loss_att=13.397, acc=0.904, loss=17.973, backward_time=0.130, grad_norm=37.651, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=9.878e-05, train_time=0.436
+[seoultech:0/4] 2024-02-03 23:10:17,081 (trainer:753) INFO: 8epoch:train:7834-8952batch: iter_time=1.985e-04, forward_time=0.130, loss_ctc=29.014, loss_att=13.657, acc=0.906, loss=18.264, backward_time=0.140, grad_norm=38.875, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=9.845e-05, train_time=0.436
+[seoultech:0/4] 2024-02-03 23:18:30,215 (trainer:753) INFO: 8epoch:train:8953-10071batch: iter_time=1.908e-04, forward_time=0.131, loss_ctc=28.375, loss_att=13.265, acc=0.903, loss=17.798, backward_time=0.133, grad_norm=37.125, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=9.812e-05, train_time=0.440
+[seoultech:0/4] 2024-02-03 23:26:48,478 (trainer:753) INFO: 8epoch:train:10072-11190batch: iter_time=1.837e-04, forward_time=0.128, loss_ctc=28.579, loss_att=13.393, acc=0.905, loss=17.948, backward_time=0.152, grad_norm=37.811, clip=99.821, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=9.779e-05, train_time=0.444
+[seoultech:0/4] 2024-02-03 23:35:01,499 (trainer:753) INFO: 8epoch:train:11191-12309batch: iter_time=2.282e-04, forward_time=0.135, loss_ctc=28.043, loss_att=13.150, acc=0.903, loss=17.618, backward_time=0.155, grad_norm=37.057, clip=99.821, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=9.746e-05, train_time=0.440
+[seoultech:0/4] 2024-02-03 23:43:17,794 (trainer:753) INFO: 8epoch:train:12310-13428batch: iter_time=1.929e-04, forward_time=0.127, loss_ctc=28.464, loss_att=13.351, acc=0.906, loss=17.885, backward_time=0.141, grad_norm=37.571, clip=99.911, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=9.714e-05, train_time=0.443
+[seoultech:0/4] 2024-02-03 23:51:36,047 (trainer:753) INFO: 8epoch:train:13429-14547batch: iter_time=1.914e-04, forward_time=0.120, loss_ctc=27.189, loss_att=12.857, acc=0.902, loss=17.157, backward_time=0.167, grad_norm=36.836, clip=99.643, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=9.682e-05, train_time=0.445
+[seoultech:0/4] 2024-02-03 23:59:51,870 (trainer:753) INFO: 8epoch:train:14548-15666batch: iter_time=1.858e-04, forward_time=0.122, loss_ctc=28.174, loss_att=13.203, acc=0.902, loss=17.694, backward_time=0.151, grad_norm=37.595, clip=99.821, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=9.651e-05, train_time=0.442
+[seoultech:0/4] 2024-02-04 00:07:59,815 (trainer:753) INFO: 8epoch:train:15667-16785batch: iter_time=2.053e-04, forward_time=0.132, loss_ctc=28.525, loss_att=13.329, acc=0.905, loss=17.888, backward_time=0.150, grad_norm=37.582, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=9.619e-05, train_time=0.435
+[seoultech:0/4] 2024-02-04 00:16:16,126 (trainer:753) INFO: 8epoch:train:16786-17904batch: iter_time=1.977e-04, forward_time=0.130, loss_ctc=27.804, loss_att=13.071, acc=0.903, loss=17.491, backward_time=0.141, grad_norm=37.845, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=9.588e-05, train_time=0.443
+[seoultech:0/4] 2024-02-04 00:24:26,914 (trainer:753) INFO: 8epoch:train:17905-19023batch: iter_time=1.782e-04, forward_time=0.112, loss_ctc=27.842, loss_att=13.064, acc=0.902, loss=17.497, backward_time=0.130, grad_norm=38.096, clip=99.643, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=9.558e-05, train_time=0.438
+[seoultech:0/4] 2024-02-04 00:32:28,439 (trainer:753) INFO: 8epoch:train:19024-20142batch: iter_time=1.799e-04, forward_time=0.116, loss_ctc=27.535, loss_att=12.914, acc=0.903, loss=17.300, backward_time=0.128, grad_norm=37.384, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=9.527e-05, train_time=0.430
+[seoultech:0/4] 2024-02-04 00:40:45,192 (trainer:753) INFO: 8epoch:train:20143-21261batch: iter_time=2.044e-04, forward_time=0.135, loss_ctc=28.482, loss_att=13.361, acc=0.907, loss=17.897, backward_time=0.148, grad_norm=38.649, clip=99.821, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=9.497e-05, train_time=0.443
+[seoultech:0/4] 2024-02-04 00:48:54,045 (trainer:753) INFO: 8epoch:train:21262-22380batch: iter_time=1.958e-04, forward_time=0.121, loss_ctc=28.716, loss_att=13.465, acc=0.907, loss=18.040, backward_time=0.168, grad_norm=37.684, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=9.467e-05, train_time=0.436
+[seoultech:0/4] 2024-02-04 01:05:39,933 (trainer:352) INFO: 8epoch results: [train] iter_time=2.320e-04, forward_time=0.124, loss_ctc=28.176, loss_att=13.230, acc=0.903, loss=17.714, backward_time=0.144, grad_norm=37.932, clip=99.803, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=9.768e-05, train_time=0.440, time=2 hours, 44 minutes and 29.13 seconds, total_count=179072, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=19.522, cer_ctc=0.130, loss_att=8.833, acc=0.940, cer=0.080, wer=0.227, loss=12.040, time=15 minutes and 19.27 seconds, total_count=22752, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 21.91 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-04 01:05:49,182 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-04 01:05:49,182 (trainer:286) INFO: 9/35epoch started. Estimated time to finish: 3 days, 9 hours and 28 minutes
+[seoultech:0/4] 2024-02-04 01:14:14,810 (trainer:753) INFO: 9epoch:train:1-1119batch: iter_time=8.414e-04, forward_time=0.128, loss_ctc=27.247, loss_att=12.778, acc=0.906, loss=17.118, backward_time=0.152, grad_norm=38.109, clip=99.643, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=9.438e-05, train_time=0.451
+[seoultech:0/4] 2024-02-04 01:22:22,143 (trainer:753) INFO: 9epoch:train:1120-2238batch: iter_time=1.837e-04, forward_time=0.126, loss_ctc=26.907, loss_att=12.588, acc=0.906, loss=16.884, backward_time=0.142, grad_norm=37.056, clip=99.732, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=9.408e-05, train_time=0.435
+[seoultech:0/4] 2024-02-04 01:30:41,612 (trainer:753) INFO: 9epoch:train:2239-3357batch: iter_time=1.988e-04, forward_time=0.127, loss_ctc=27.387, loss_att=12.790, acc=0.905, loss=17.169, backward_time=0.155, grad_norm=37.043, clip=99.911, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=9.379e-05, train_time=0.446
+[seoultech:0/4] 2024-02-04 01:38:53,043 (trainer:753) INFO: 9epoch:train:3358-4476batch: iter_time=1.932e-04, forward_time=0.125, loss_ctc=27.072, loss_att=12.665, acc=0.907, loss=16.987, backward_time=0.141, grad_norm=36.814, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=9.351e-05, train_time=0.438
+[seoultech:0/4] 2024-02-04 01:47:04,926 (trainer:753) INFO: 9epoch:train:4477-5595batch: iter_time=1.848e-04, forward_time=0.124, loss_ctc=26.552, loss_att=12.486, acc=0.903, loss=16.706, backward_time=0.148, grad_norm=37.691, clip=99.464, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=9.322e-05, train_time=0.439
+[seoultech:0/4] 2024-02-04 01:55:30,661 (trainer:753) INFO: 9epoch:train:5596-6714batch: iter_time=1.908e-04, forward_time=0.130, loss_ctc=27.748, loss_att=12.963, acc=0.908, loss=17.399, backward_time=0.164, grad_norm=38.525, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=9.294e-05, train_time=0.451
+[seoultech:0/4] 2024-02-04 02:03:48,181 (trainer:753) INFO: 9epoch:train:6715-7833batch: iter_time=1.934e-04, forward_time=0.127, loss_ctc=27.146, loss_att=12.674, acc=0.906, loss=17.016, backward_time=0.154, grad_norm=37.058, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=9.266e-05, train_time=0.444
+[seoultech:0/4] 2024-02-04 02:12:01,029 (trainer:753) INFO: 9epoch:train:7834-8952batch: iter_time=2.078e-04, forward_time=0.122, loss_ctc=27.218, loss_att=12.767, acc=0.908, loss=17.102, backward_time=0.134, grad_norm=37.420, clip=100.000, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=9.238e-05, train_time=0.440
+[seoultech:0/4] 2024-02-04 02:20:18,068 (trainer:753) INFO: 9epoch:train:8953-10071batch: iter_time=2.055e-04, forward_time=0.133, loss_ctc=26.592, loss_att=12.558, acc=0.904, loss=16.768, backward_time=0.150, grad_norm=37.600, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=9.211e-05, train_time=0.443
+[seoultech:0/4] 2024-02-04 02:28:31,466 (trainer:753) INFO: 9epoch:train:10072-11190batch: iter_time=2.159e-04, forward_time=0.136, loss_ctc=27.239, loss_att=12.801, acc=0.908, loss=17.133, backward_time=0.142, grad_norm=37.142, clip=99.732, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=9.184e-05, train_time=0.440
+[seoultech:0/4] 2024-02-04 02:36:36,675 (trainer:753) INFO: 9epoch:train:11191-12309batch: iter_time=2.041e-04, forward_time=0.128, loss_ctc=27.286, loss_att=12.867, acc=0.908, loss=17.193, backward_time=0.135, grad_norm=37.779, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=9.157e-05, train_time=0.433
+[seoultech:0/4] 2024-02-04 02:44:45,083 (trainer:753) INFO: 9epoch:train:12310-13428batch: iter_time=1.588e-04, forward_time=0.115, loss_ctc=27.469, loss_att=12.778, acc=0.906, loss=17.185, backward_time=0.150, grad_norm=37.336, clip=99.732, loss_scale=1.000, optim_step_time=0.030, optim0_lr0=9.130e-05, train_time=0.436
+[seoultech:0/4] 2024-02-04 02:52:54,643 (trainer:753) INFO: 9epoch:train:13429-14547batch: iter_time=1.845e-04, forward_time=0.121, loss_ctc=27.601, loss_att=12.865, acc=0.906, loss=17.286, backward_time=0.148, grad_norm=37.611, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=9.104e-05, train_time=0.437
+[seoultech:0/4] 2024-02-04 03:01:07,416 (trainer:753) INFO: 9epoch:train:14548-15666batch: iter_time=2.106e-04, forward_time=0.129, loss_ctc=27.470, loss_att=12.794, acc=0.906, loss=17.196, backward_time=0.151, grad_norm=38.700, clip=99.911, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=9.077e-05, train_time=0.440
+[seoultech:0/4] 2024-02-04 03:09:22,494 (trainer:753) INFO: 9epoch:train:15667-16785batch: iter_time=2.319e-04, forward_time=0.132, loss_ctc=27.130, loss_att=12.714, acc=0.906, loss=17.039, backward_time=0.151, grad_norm=37.845, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=9.051e-05, train_time=0.442
+[seoultech:0/4] 2024-02-04 03:17:31,172 (trainer:753) INFO: 9epoch:train:16786-17904batch: iter_time=1.956e-04, forward_time=0.127, loss_ctc=27.529, loss_att=12.880, acc=0.908, loss=17.275, backward_time=0.148, grad_norm=38.043, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=9.025e-05, train_time=0.436
+[seoultech:0/4] 2024-02-04 03:25:38,422 (trainer:753) INFO: 9epoch:train:17905-19023batch: iter_time=1.963e-04, forward_time=0.127, loss_ctc=27.257, loss_att=12.753, acc=0.906, loss=17.104, backward_time=0.148, grad_norm=38.870, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=9.000e-05, train_time=0.435
+[seoultech:0/4] 2024-02-04 03:33:47,320 (trainer:753) INFO: 9epoch:train:19024-20142batch: iter_time=1.699e-04, forward_time=0.115, loss_ctc=26.511, loss_att=12.383, acc=0.904, loss=16.622, backward_time=0.146, grad_norm=37.398, clip=99.821, loss_scale=1.000, optim_step_time=0.032, optim0_lr0=8.974e-05, train_time=0.436
+[seoultech:0/4] 2024-02-04 03:41:54,625 (trainer:753) INFO: 9epoch:train:20143-21261batch: iter_time=1.992e-04, forward_time=0.126, loss_ctc=27.536, loss_att=12.815, acc=0.910, loss=17.231, backward_time=0.139, grad_norm=37.450, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.949e-05, train_time=0.435
+[seoultech:0/4] 2024-02-04 03:50:08,395 (trainer:753) INFO: 9epoch:train:21262-22380batch: iter_time=2.034e-04, forward_time=0.121, loss_ctc=26.675, loss_att=12.466, acc=0.907, loss=16.729, backward_time=0.150, grad_norm=37.825, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.924e-05, train_time=0.440
+[seoultech:0/4] 2024-02-04 04:06:13,157 (trainer:352) INFO: 9epoch results: [train] iter_time=2.285e-04, forward_time=0.126, loss_ctc=27.174, loss_att=12.717, acc=0.906, loss=17.054, backward_time=0.147, grad_norm=37.666, clip=99.812, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=9.174e-05, train_time=0.440, time=2 hours, 44 minutes and 24.05 seconds, total_count=201456, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=19.132, cer_ctc=0.128, loss_att=8.658, acc=0.942, cer=0.079, wer=0.224, loss=11.800, time=14 minutes and 51.38 seconds, total_count=25596, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 8.54 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-04 04:06:19,657 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-04 04:06:19,658 (trainer:286) INFO: 10/35epoch started. Estimated time to finish: 3 days, 6 hours and 25 minutes
+[seoultech:0/4] 2024-02-04 04:14:32,505 (trainer:753) INFO: 10epoch:train:1-1119batch: iter_time=4.410e-04, forward_time=0.111, loss_ctc=26.068, loss_att=12.215, acc=0.906, loss=16.371, backward_time=0.134, grad_norm=38.085, clip=99.643, loss_scale=1.000, optim_step_time=0.027, optim0_lr0=8.900e-05, train_time=0.440
+[seoultech:0/4] 2024-02-04 04:22:44,602 (trainer:753) INFO: 10epoch:train:1120-2238batch: iter_time=2.043e-04, forward_time=0.129, loss_ctc=26.534, loss_att=12.359, acc=0.909, loss=16.612, backward_time=0.158, grad_norm=37.643, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.875e-05, train_time=0.439
+[seoultech:0/4] 2024-02-04 04:30:47,536 (trainer:753) INFO: 10epoch:train:2239-3357batch: iter_time=1.748e-04, forward_time=0.113, loss_ctc=25.649, loss_att=12.033, acc=0.906, loss=16.118, backward_time=0.150, grad_norm=37.549, clip=100.000, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=8.851e-05, train_time=0.431
+[seoultech:0/4] 2024-02-04 04:38:52,914 (trainer:753) INFO: 10epoch:train:3358-4476batch: iter_time=2.190e-04, forward_time=0.132, loss_ctc=26.186, loss_att=12.282, acc=0.908, loss=16.453, backward_time=0.141, grad_norm=37.861, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.826e-05, train_time=0.433
+[seoultech:0/4] 2024-02-04 04:46:55,105 (trainer:753) INFO: 10epoch:train:4477-5595batch: iter_time=1.811e-04, forward_time=0.118, loss_ctc=26.009, loss_att=12.148, acc=0.908, loss=16.306, backward_time=0.172, grad_norm=37.199, clip=99.821, loss_scale=1.000, optim_step_time=0.031, optim0_lr0=8.803e-05, train_time=0.430
+[seoultech:0/4] 2024-02-04 04:54:57,900 (trainer:753) INFO: 10epoch:train:5596-6714batch: iter_time=2.083e-04, forward_time=0.133, loss_ctc=26.070, loss_att=12.203, acc=0.907, loss=16.363, backward_time=0.156, grad_norm=37.139, clip=99.464, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=8.779e-05, train_time=0.431
+[seoultech:0/4] 2024-02-04 05:03:08,287 (trainer:753) INFO: 10epoch:train:6715-7833batch: iter_time=1.916e-04, forward_time=0.127, loss_ctc=26.088, loss_att=12.215, acc=0.905, loss=16.377, backward_time=0.164, grad_norm=38.304, clip=99.553, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.755e-05, train_time=0.438
+[seoultech:0/4] 2024-02-04 05:11:18,998 (trainer:753) INFO: 10epoch:train:7834-8952batch: iter_time=1.984e-04, forward_time=0.128, loss_ctc=26.755, loss_att=12.524, acc=0.911, loss=16.793, backward_time=0.135, grad_norm=38.424, clip=99.553, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.732e-05, train_time=0.438
+[seoultech:0/4] 2024-02-04 05:19:36,437 (trainer:753) INFO: 10epoch:train:8953-10071batch: iter_time=1.860e-04, forward_time=0.125, loss_ctc=26.375, loss_att=12.370, acc=0.908, loss=16.571, backward_time=0.158, grad_norm=38.338, clip=100.000, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=8.709e-05, train_time=0.444
+[seoultech:0/4] 2024-02-04 05:27:52,591 (trainer:753) INFO: 10epoch:train:10072-11190batch: iter_time=1.937e-04, forward_time=0.128, loss_ctc=26.790, loss_att=12.519, acc=0.910, loss=16.800, backward_time=0.155, grad_norm=38.063, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.686e-05, train_time=0.443
+[seoultech:0/4] 2024-02-04 05:35:54,079 (trainer:753) INFO: 10epoch:train:11191-12309batch: iter_time=2.089e-04, forward_time=0.133, loss_ctc=26.093, loss_att=12.207, acc=0.908, loss=16.372, backward_time=0.131, grad_norm=37.301, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.663e-05, train_time=0.429
+[seoultech:0/4] 2024-02-04 05:44:15,587 (trainer:753) INFO: 10epoch:train:12310-13428batch: iter_time=2.015e-04, forward_time=0.131, loss_ctc=26.144, loss_att=12.237, acc=0.907, loss=16.409, backward_time=0.159, grad_norm=37.060, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.640e-05, train_time=0.447
+[seoultech:0/4] 2024-02-04 05:52:34,119 (trainer:753) INFO: 10epoch:train:13429-14547batch: iter_time=2.009e-04, forward_time=0.120, loss_ctc=27.076, loss_att=12.608, acc=0.910, loss=16.949, backward_time=0.171, grad_norm=38.559, clip=99.911, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.618e-05, train_time=0.445
+[seoultech:0/4] 2024-02-04 06:00:54,872 (trainer:753) INFO: 10epoch:train:14548-15666batch: iter_time=2.041e-04, forward_time=0.128, loss_ctc=26.239, loss_att=12.337, acc=0.910, loss=16.508, backward_time=0.169, grad_norm=38.487, clip=99.643, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.595e-05, train_time=0.447
+[seoultech:0/4] 2024-02-04 06:09:06,065 (trainer:753) INFO: 10epoch:train:15667-16785batch: iter_time=1.525e-04, forward_time=0.114, loss_ctc=25.738, loss_att=11.969, acc=0.906, loss=16.100, backward_time=0.136, grad_norm=37.010, clip=99.643, loss_scale=1.000, optim_step_time=0.031, optim0_lr0=8.573e-05, train_time=0.438
+[seoultech:0/4] 2024-02-04 06:17:11,508 (trainer:753) INFO: 10epoch:train:16786-17904batch: iter_time=1.897e-04, forward_time=0.127, loss_ctc=26.662, loss_att=12.407, acc=0.910, loss=16.683, backward_time=0.132, grad_norm=38.200, clip=100.000, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.551e-05, train_time=0.433
+[seoultech:0/4] 2024-02-04 06:25:17,420 (trainer:753) INFO: 10epoch:train:17905-19023batch: iter_time=2.106e-04, forward_time=0.128, loss_ctc=26.465, loss_att=12.321, acc=0.911, loss=16.564, backward_time=0.132, grad_norm=36.649, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.530e-05, train_time=0.433
+[seoultech:0/4] 2024-02-04 06:33:26,602 (trainer:753) INFO: 10epoch:train:19024-20142batch: iter_time=2.096e-04, forward_time=0.132, loss_ctc=26.293, loss_att=12.238, acc=0.909, loss=16.454, backward_time=0.130, grad_norm=37.826, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.508e-05, train_time=0.436
+[seoultech:0/4] 2024-02-04 06:41:43,551 (trainer:753) INFO: 10epoch:train:20143-21261batch: iter_time=2.383e-04, forward_time=0.127, loss_ctc=26.745, loss_att=12.461, acc=0.910, loss=16.746, backward_time=0.162, grad_norm=38.455, clip=100.000, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=8.486e-05, train_time=0.443
+[seoultech:0/4] 2024-02-04 06:49:54,130 (trainer:753) INFO: 10epoch:train:21262-22380batch: iter_time=2.222e-04, forward_time=0.132, loss_ctc=26.813, loss_att=12.555, acc=0.913, loss=16.832, backward_time=0.147, grad_norm=37.146, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.465e-05, train_time=0.438
+[seoultech:0/4] 2024-02-04 07:06:58,070 (trainer:352) INFO: 10epoch results: [train] iter_time=2.118e-04, forward_time=0.126, loss_ctc=26.333, loss_att=12.307, acc=0.909, loss=16.515, backward_time=0.150, grad_norm=37.763, clip=99.786, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.677e-05, train_time=0.438, time=2 hours, 43 minutes and 39.07 seconds, total_count=223840, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=19.152, cer_ctc=0.126, loss_att=8.628, acc=0.942, cer=0.078, wer=0.222, loss=11.785, time=15 minutes and 41.34 seconds, total_count=28440, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 17.99 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-04 07:07:04,629 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-04 07:07:04,630 (trainer:286) INFO: 11/35epoch started. Estimated time to finish: 3 days, 3 hours and 24 minutes
+[seoultech:0/4] 2024-02-04 07:15:24,115 (trainer:753) INFO: 11epoch:train:1-1119batch: iter_time=8.302e-04, forward_time=0.130, loss_ctc=24.989, loss_att=11.688, acc=0.908, loss=15.678, backward_time=0.141, grad_norm=37.002, clip=99.643, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.444e-05, train_time=0.445
+[seoultech:0/4] 2024-02-04 07:23:38,653 (trainer:753) INFO: 11epoch:train:1120-2238batch: iter_time=2.139e-04, forward_time=0.125, loss_ctc=25.885, loss_att=12.155, acc=0.913, loss=16.274, backward_time=0.170, grad_norm=37.778, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.423e-05, train_time=0.441
+[seoultech:0/4] 2024-02-04 07:31:46,498 (trainer:753) INFO: 11epoch:train:2239-3357batch: iter_time=1.979e-04, forward_time=0.121, loss_ctc=25.860, loss_att=12.032, acc=0.913, loss=16.180, backward_time=0.148, grad_norm=37.367, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.402e-05, train_time=0.435
+[seoultech:0/4] 2024-02-04 07:39:54,064 (trainer:753) INFO: 11epoch:train:3358-4476batch: iter_time=1.985e-04, forward_time=0.132, loss_ctc=25.759, loss_att=11.956, acc=0.911, loss=16.097, backward_time=0.141, grad_norm=36.372, clip=99.643, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.382e-05, train_time=0.435
+[seoultech:0/4] 2024-02-04 07:48:13,598 (trainer:753) INFO: 11epoch:train:4477-5595batch: iter_time=1.999e-04, forward_time=0.135, loss_ctc=25.292, loss_att=11.863, acc=0.909, loss=15.892, backward_time=0.172, grad_norm=36.836, clip=99.643, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=8.361e-05, train_time=0.446
+[seoultech:0/4] 2024-02-04 07:56:32,244 (trainer:753) INFO: 11epoch:train:5596-6714batch: iter_time=2.013e-04, forward_time=0.134, loss_ctc=24.784, loss_att=11.611, acc=0.908, loss=15.563, backward_time=0.158, grad_norm=36.514, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=8.341e-05, train_time=0.445
+[seoultech:0/4] 2024-02-04 08:04:42,005 (trainer:753) INFO: 11epoch:train:6715-7833batch: iter_time=2.062e-04, forward_time=0.135, loss_ctc=25.717, loss_att=12.024, acc=0.909, loss=16.131, backward_time=0.132, grad_norm=37.625, clip=99.553, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=8.320e-05, train_time=0.437
+[seoultech:0/4] 2024-02-04 08:12:56,796 (trainer:753) INFO: 11epoch:train:7834-8952batch: iter_time=2.002e-04, forward_time=0.128, loss_ctc=26.039, loss_att=12.226, acc=0.912, loss=16.370, backward_time=0.148, grad_norm=38.315, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.300e-05, train_time=0.442
+[seoultech:0/4] 2024-02-04 08:21:02,454 (trainer:753) INFO: 11epoch:train:8953-10071batch: iter_time=1.974e-04, forward_time=0.119, loss_ctc=25.527, loss_att=11.979, acc=0.912, loss=16.043, backward_time=0.150, grad_norm=36.605, clip=99.643, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.280e-05, train_time=0.433
+[seoultech:0/4] 2024-02-04 08:29:07,531 (trainer:753) INFO: 11epoch:train:10072-11190batch: iter_time=2.041e-04, forward_time=0.122, loss_ctc=25.547, loss_att=11.923, acc=0.912, loss=16.010, backward_time=0.152, grad_norm=36.714, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.261e-05, train_time=0.433
+[seoultech:0/4] 2024-02-04 08:37:16,856 (trainer:753) INFO: 11epoch:train:11191-12309batch: iter_time=1.989e-04, forward_time=0.128, loss_ctc=25.578, loss_att=11.965, acc=0.912, loss=16.049, backward_time=0.144, grad_norm=37.753, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.241e-05, train_time=0.437
+[seoultech:0/4] 2024-02-04 08:45:36,813 (trainer:753) INFO: 11epoch:train:12310-13428batch: iter_time=1.976e-04, forward_time=0.122, loss_ctc=25.374, loss_att=11.857, acc=0.910, loss=15.912, backward_time=0.171, grad_norm=37.529, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.222e-05, train_time=0.446
+[seoultech:0/4] 2024-02-04 08:53:48,615 (trainer:753) INFO: 11epoch:train:13429-14547batch: iter_time=1.635e-04, forward_time=0.116, loss_ctc=25.853, loss_att=12.067, acc=0.912, loss=16.203, backward_time=0.156, grad_norm=37.585, clip=99.821, loss_scale=1.000, optim_step_time=0.031, optim0_lr0=8.202e-05, train_time=0.439
+[seoultech:0/4] 2024-02-04 09:02:06,902 (trainer:753) INFO: 11epoch:train:14548-15666batch: iter_time=2.048e-04, forward_time=0.124, loss_ctc=25.138, loss_att=11.705, acc=0.909, loss=15.735, backward_time=0.173, grad_norm=37.224, clip=99.643, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.183e-05, train_time=0.444
+[seoultech:0/4] 2024-02-04 09:10:17,115 (trainer:753) INFO: 11epoch:train:15667-16785batch: iter_time=1.877e-04, forward_time=0.121, loss_ctc=25.723, loss_att=11.988, acc=0.910, loss=16.109, backward_time=0.150, grad_norm=36.979, clip=99.911, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=8.164e-05, train_time=0.437
+[seoultech:0/4] 2024-02-04 09:18:29,072 (trainer:753) INFO: 11epoch:train:16786-17904batch: iter_time=1.845e-04, forward_time=0.124, loss_ctc=25.929, loss_att=12.110, acc=0.911, loss=16.256, backward_time=0.138, grad_norm=37.420, clip=99.643, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=8.145e-05, train_time=0.439
+[seoultech:0/4] 2024-02-04 09:26:44,226 (trainer:753) INFO: 11epoch:train:17905-19023batch: iter_time=2.039e-04, forward_time=0.127, loss_ctc=25.869, loss_att=12.048, acc=0.911, loss=16.194, backward_time=0.164, grad_norm=37.635, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.126e-05, train_time=0.442
+[seoultech:0/4] 2024-02-04 09:35:03,382 (trainer:753) INFO: 11epoch:train:19024-20142batch: iter_time=1.982e-04, forward_time=0.120, loss_ctc=25.155, loss_att=11.728, acc=0.910, loss=15.756, backward_time=0.175, grad_norm=36.765, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.107e-05, train_time=0.445
+[seoultech:0/4] 2024-02-04 09:43:21,549 (trainer:753) INFO: 11epoch:train:20143-21261batch: iter_time=1.687e-04, forward_time=0.112, loss_ctc=26.127, loss_att=12.139, acc=0.913, loss=16.335, backward_time=0.155, grad_norm=37.189, clip=99.732, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=8.089e-05, train_time=0.445
+[seoultech:0/4] 2024-02-04 09:51:33,043 (trainer:753) INFO: 11epoch:train:21262-22380batch: iter_time=1.900e-04, forward_time=0.127, loss_ctc=25.986, loss_att=12.096, acc=0.913, loss=16.263, backward_time=0.132, grad_norm=37.269, clip=99.911, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.070e-05, train_time=0.438
+[seoultech:0/4] 2024-02-04 10:08:56,627 (trainer:352) INFO: 11epoch results: [train] iter_time=2.274e-04, forward_time=0.125, loss_ctc=25.600, loss_att=11.955, acc=0.911, loss=16.048, backward_time=0.154, grad_norm=37.224, clip=99.768, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=8.253e-05, train_time=0.440, time=2 hours, 44 minutes and 33.17 seconds, total_count=246224, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=18.599, cer_ctc=0.125, loss_att=8.416, acc=0.943, cer=0.076, wer=0.219, loss=11.471, time=15 minutes and 43.77 seconds, total_count=31284, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 35.05 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-04 10:09:03,876 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-04 10:09:03,886 (trainer:461) INFO: The model files were removed: exp/asr_train_asr_conformer8_n_fft512_hop_length256_raw_kr_char/1epoch.pth
+[seoultech:0/4] 2024-02-04 10:09:03,886 (trainer:286) INFO: 12/35epoch started. Estimated time to finish: 3 days, 25 minutes and 27.58 seconds
+[seoultech:0/4] 2024-02-04 10:17:35,192 (trainer:753) INFO: 12epoch:train:1-1119batch: iter_time=7.856e-04, forward_time=0.119, loss_ctc=24.956, loss_att=11.656, acc=0.912, loss=15.646, backward_time=0.172, grad_norm=37.969, clip=99.643, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=8.052e-05, train_time=0.456
+[seoultech:0/4] 2024-02-04 10:25:53,226 (trainer:753) INFO: 12epoch:train:1120-2238batch: iter_time=2.034e-04, forward_time=0.125, loss_ctc=25.622, loss_att=11.906, acc=0.914, loss=16.021, backward_time=0.155, grad_norm=37.647, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.034e-05, train_time=0.444
+[seoultech:0/4] 2024-02-04 10:34:06,267 (trainer:753) INFO: 12epoch:train:2239-3357batch: iter_time=2.052e-04, forward_time=0.121, loss_ctc=25.134, loss_att=11.763, acc=0.914, loss=15.774, backward_time=0.143, grad_norm=37.238, clip=99.464, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=8.016e-05, train_time=0.440
+[seoultech:0/4] 2024-02-04 10:42:21,527 (trainer:753) INFO: 12epoch:train:3358-4476batch: iter_time=1.870e-04, forward_time=0.118, loss_ctc=25.555, loss_att=11.945, acc=0.916, loss=16.028, backward_time=0.148, grad_norm=37.065, clip=100.000, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=7.998e-05, train_time=0.442
+[seoultech:0/4] 2024-02-04 10:50:35,300 (trainer:753) INFO: 12epoch:train:4477-5595batch: iter_time=1.747e-04, forward_time=0.117, loss_ctc=24.960, loss_att=11.642, acc=0.911, loss=15.637, backward_time=0.155, grad_norm=37.174, clip=99.732, loss_scale=1.000, optim_step_time=0.032, optim0_lr0=7.980e-05, train_time=0.441
+[seoultech:0/4] 2024-02-04 10:58:48,366 (trainer:753) INFO: 12epoch:train:5596-6714batch: iter_time=1.933e-04, forward_time=0.131, loss_ctc=24.992, loss_att=11.657, acc=0.912, loss=15.658, backward_time=0.146, grad_norm=36.117, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.962e-05, train_time=0.440
+[seoultech:0/4] 2024-02-04 11:06:57,371 (trainer:753) INFO: 12epoch:train:6715-7833batch: iter_time=1.951e-04, forward_time=0.128, loss_ctc=24.539, loss_att=11.483, acc=0.911, loss=15.400, backward_time=0.131, grad_norm=36.140, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.945e-05, train_time=0.436
+[seoultech:0/4] 2024-02-04 11:15:02,814 (trainer:753) INFO: 12epoch:train:7834-8952batch: iter_time=2.025e-04, forward_time=0.133, loss_ctc=24.853, loss_att=11.609, acc=0.913, loss=15.582, backward_time=0.139, grad_norm=37.494, clip=99.911, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=7.927e-05, train_time=0.433
+[seoultech:0/4] 2024-02-04 11:23:03,289 (trainer:753) INFO: 12epoch:train:8953-10071batch: iter_time=2.112e-04, forward_time=0.133, loss_ctc=25.766, loss_att=11.981, acc=0.915, loss=16.116, backward_time=0.135, grad_norm=38.275, clip=99.911, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=7.910e-05, train_time=0.429
+[seoultech:0/4] 2024-02-04 11:31:21,162 (trainer:753) INFO: 12epoch:train:10072-11190batch: iter_time=2.048e-04, forward_time=0.136, loss_ctc=24.242, loss_att=11.355, acc=0.910, loss=15.221, backward_time=0.172, grad_norm=36.652, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.893e-05, train_time=0.444
+[seoultech:0/4] 2024-02-04 11:39:38,162 (trainer:753) INFO: 12epoch:train:11191-12309batch: iter_time=2.070e-04, forward_time=0.127, loss_ctc=24.751, loss_att=11.544, acc=0.911, loss=15.506, backward_time=0.160, grad_norm=36.399, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.875e-05, train_time=0.443
+[seoultech:0/4] 2024-02-04 11:47:56,162 (trainer:753) INFO: 12epoch:train:12310-13428batch: iter_time=2.088e-04, forward_time=0.118, loss_ctc=24.842, loss_att=11.592, acc=0.913, loss=15.567, backward_time=0.171, grad_norm=36.916, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.858e-05, train_time=0.444
+[seoultech:0/4] 2024-02-04 11:56:14,794 (trainer:753) INFO: 12epoch:train:13429-14547batch: iter_time=2.085e-04, forward_time=0.123, loss_ctc=24.541, loss_att=11.498, acc=0.910, loss=15.411, backward_time=0.166, grad_norm=35.889, clip=99.821, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=7.841e-05, train_time=0.445
+[seoultech:0/4] 2024-02-04 12:04:21,574 (trainer:753) INFO: 12epoch:train:14548-15666batch: iter_time=1.828e-04, forward_time=0.117, loss_ctc=25.013, loss_att=11.647, acc=0.914, loss=15.657, backward_time=0.150, grad_norm=36.386, clip=100.000, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=7.825e-05, train_time=0.434
+[seoultech:0/4] 2024-02-04 12:12:28,885 (trainer:753) INFO: 12epoch:train:15667-16785batch: iter_time=1.936e-04, forward_time=0.119, loss_ctc=24.728, loss_att=11.555, acc=0.913, loss=15.507, backward_time=0.133, grad_norm=36.292, clip=99.732, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=7.808e-05, train_time=0.435
+[seoultech:0/4] 2024-02-04 12:20:42,347 (trainer:753) INFO: 12epoch:train:16786-17904batch: iter_time=2.156e-04, forward_time=0.125, loss_ctc=25.066, loss_att=11.706, acc=0.912, loss=15.714, backward_time=0.135, grad_norm=36.992, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.791e-05, train_time=0.440
+[seoultech:0/4] 2024-02-04 12:29:04,145 (trainer:753) INFO: 12epoch:train:17905-19023batch: iter_time=2.134e-04, forward_time=0.136, loss_ctc=25.725, loss_att=12.007, acc=0.916, loss=16.122, backward_time=0.163, grad_norm=37.336, clip=99.911, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=7.775e-05, train_time=0.448
+[seoultech:0/4] 2024-02-04 12:37:09,965 (trainer:753) INFO: 12epoch:train:19024-20142batch: iter_time=1.731e-04, forward_time=0.120, loss_ctc=25.429, loss_att=11.808, acc=0.913, loss=15.894, backward_time=0.147, grad_norm=36.823, clip=100.000, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=7.758e-05, train_time=0.434
+[seoultech:0/4] 2024-02-04 12:45:18,894 (trainer:753) INFO: 12epoch:train:20143-21261batch: iter_time=2.006e-04, forward_time=0.125, loss_ctc=24.116, loss_att=11.236, acc=0.910, loss=15.100, backward_time=0.139, grad_norm=36.685, clip=99.553, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=7.742e-05, train_time=0.436
+[seoultech:0/4] 2024-02-04 12:53:20,257 (trainer:753) INFO: 12epoch:train:21262-22380batch: iter_time=1.976e-04, forward_time=0.126, loss_ctc=24.583, loss_att=11.442, acc=0.912, loss=15.384, backward_time=0.137, grad_norm=36.263, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.726e-05, train_time=0.429
+[seoultech:0/4] 2024-02-04 13:10:28,123 (trainer:352) INFO: 12epoch results: [train] iter_time=2.282e-04, forward_time=0.125, loss_ctc=24.960, loss_att=11.647, acc=0.913, loss=15.641, backward_time=0.150, grad_norm=36.887, clip=99.803, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=7.886e-05, train_time=0.440, time=2 hours, 44 minutes and 20.57 seconds, total_count=268608, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=18.272, cer_ctc=0.122, loss_att=8.274, acc=0.944, cer=0.075, wer=0.216, loss=11.273, time=15 minutes and 29.9 seconds, total_count=34128, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 33.77 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-04 13:10:35,686 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-04 13:10:35,695 (trainer:461) INFO: The model files were removed: exp/asr_train_asr_conformer8_n_fft512_hop_length256_raw_kr_char/2epoch.pth
+[seoultech:0/4] 2024-02-04 13:10:35,696 (trainer:286) INFO: 13/35epoch started. Estimated time to finish: 2 days, 21 hours and 25 minutes
+[seoultech:0/4] 2024-02-04 13:10:35,696 (trainer:286) INFO: 13/35epoch started. Estimated time to finish: 2 days, 21 hours and 25 minutes
+[seoultech:0/4] 2024-02-04 13:18:53,652 (trainer:753) INFO: 13epoch:train:1-1119batch: iter_time=9.240e-04, forward_time=0.130, loss_ctc=24.792, loss_att=11.590, acc=0.916, loss=15.551, backward_time=0.150, grad_norm=36.836, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.710e-05, train_time=0.444
+[seoultech:0/4] 2024-02-04 13:27:03,441 (trainer:753) INFO: 13epoch:train:1120-2238batch: iter_time=2.289e-04, forward_time=0.132, loss_ctc=24.334, loss_att=11.421, acc=0.915, loss=15.295, backward_time=0.151, grad_norm=36.283, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.694e-05, train_time=0.437
+[seoultech:0/4] 2024-02-04 13:35:02,323 (trainer:753) INFO: 13epoch:train:2239-3357batch: iter_time=1.782e-04, forward_time=0.123, loss_ctc=24.788, loss_att=11.614, acc=0.917, loss=15.566, backward_time=0.133, grad_norm=36.740, clip=99.821, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=7.678e-05, train_time=0.427
+[seoultech:0/4] 2024-02-04 13:43:12,229 (trainer:753) INFO: 13epoch:train:3358-4476batch: iter_time=1.946e-04, forward_time=0.119, loss_ctc=23.644, loss_att=11.009, acc=0.912, loss=14.800, backward_time=0.130, grad_norm=35.591, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.662e-05, train_time=0.437
+[seoultech:0/4] 2024-02-04 13:51:18,446 (trainer:753) INFO: 13epoch:train:4477-5595batch: iter_time=1.964e-04, forward_time=0.116, loss_ctc=24.619, loss_att=11.419, acc=0.916, loss=15.379, backward_time=0.128, grad_norm=36.264, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.647e-05, train_time=0.434
+[seoultech:0/4] 2024-02-04 13:59:41,560 (trainer:753) INFO: 13epoch:train:5596-6714batch: iter_time=1.881e-04, forward_time=0.116, loss_ctc=24.024, loss_att=11.275, acc=0.912, loss=15.100, backward_time=0.161, grad_norm=37.751, clip=99.732, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=7.631e-05, train_time=0.449
+[seoultech:0/4] 2024-02-04 14:07:52,424 (trainer:753) INFO: 13epoch:train:6715-7833batch: iter_time=2.028e-04, forward_time=0.124, loss_ctc=24.397, loss_att=11.342, acc=0.914, loss=15.259, backward_time=0.145, grad_norm=37.275, clip=99.643, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.615e-05, train_time=0.438
+[seoultech:0/4] 2024-02-04 14:15:55,971 (trainer:753) INFO: 13epoch:train:7834-8952batch: iter_time=1.957e-04, forward_time=0.130, loss_ctc=24.651, loss_att=11.466, acc=0.915, loss=15.421, backward_time=0.134, grad_norm=36.775, clip=99.732, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.600e-05, train_time=0.431
+[seoultech:0/4] 2024-02-04 14:24:13,329 (trainer:753) INFO: 13epoch:train:8953-10071batch: iter_time=2.157e-04, forward_time=0.130, loss_ctc=24.587, loss_att=11.436, acc=0.915, loss=15.381, backward_time=0.153, grad_norm=37.494, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.585e-05, train_time=0.444
+[seoultech:0/4] 2024-02-04 14:32:26,781 (trainer:753) INFO: 13epoch:train:10072-11190batch: iter_time=2.185e-04, forward_time=0.125, loss_ctc=24.430, loss_att=11.346, acc=0.914, loss=15.271, backward_time=0.162, grad_norm=36.752, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.570e-05, train_time=0.440
+[seoultech:0/4] 2024-02-04 14:40:42,546 (trainer:753) INFO: 13epoch:train:11191-12309batch: iter_time=2.315e-04, forward_time=0.122, loss_ctc=24.637, loss_att=11.479, acc=0.913, loss=15.426, backward_time=0.168, grad_norm=36.840, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.554e-05, train_time=0.442
+[seoultech:0/4] 2024-02-04 14:48:43,256 (trainer:753) INFO: 13epoch:train:12310-13428batch: iter_time=1.577e-04, forward_time=0.114, loss_ctc=24.395, loss_att=11.423, acc=0.914, loss=15.314, backward_time=0.143, grad_norm=37.441, clip=99.821, loss_scale=1.000, optim_step_time=0.031, optim0_lr0=7.539e-05, train_time=0.429
+[seoultech:0/4] 2024-02-04 14:57:01,376 (trainer:753) INFO: 13epoch:train:13429-14547batch: iter_time=2.423e-04, forward_time=0.135, loss_ctc=24.297, loss_att=11.359, acc=0.915, loss=15.240, backward_time=0.166, grad_norm=35.930, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.524e-05, train_time=0.444
+[seoultech:0/4] 2024-02-04 15:05:17,984 (trainer:753) INFO: 13epoch:train:14548-15666batch: iter_time=2.026e-04, forward_time=0.134, loss_ctc=24.290, loss_att=11.335, acc=0.913, loss=15.222, backward_time=0.155, grad_norm=37.506, clip=99.732, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=7.510e-05, train_time=0.443
+[seoultech:0/4] 2024-02-04 15:13:37,135 (trainer:753) INFO: 13epoch:train:15667-16785batch: iter_time=2.041e-04, forward_time=0.127, loss_ctc=25.006, loss_att=11.639, acc=0.915, loss=15.649, backward_time=0.166, grad_norm=37.718, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.495e-05, train_time=0.445
+[seoultech:0/4] 2024-02-04 15:21:49,235 (trainer:753) INFO: 13epoch:train:16786-17904batch: iter_time=1.991e-04, forward_time=0.126, loss_ctc=24.046, loss_att=11.199, acc=0.912, loss=15.053, backward_time=0.171, grad_norm=36.652, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.480e-05, train_time=0.439
+[seoultech:0/4] 2024-02-04 15:30:06,891 (trainer:753) INFO: 13epoch:train:17905-19023batch: iter_time=1.979e-04, forward_time=0.126, loss_ctc=24.527, loss_att=11.437, acc=0.914, loss=15.364, backward_time=0.171, grad_norm=36.643, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.466e-05, train_time=0.444
+[seoultech:0/4] 2024-02-04 15:38:10,684 (trainer:753) INFO: 13epoch:train:19024-20142batch: iter_time=1.747e-04, forward_time=0.117, loss_ctc=23.911, loss_att=11.166, acc=0.914, loss=14.990, backward_time=0.171, grad_norm=35.940, clip=99.911, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=7.451e-05, train_time=0.432
+[seoultech:0/4] 2024-02-04 15:46:31,673 (trainer:753) INFO: 13epoch:train:20143-21261batch: iter_time=2.059e-04, forward_time=0.127, loss_ctc=23.668, loss_att=11.038, acc=0.912, loss=14.827, backward_time=0.174, grad_norm=35.987, clip=99.821, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=7.437e-05, train_time=0.447
+[seoultech:0/4] 2024-02-04 15:54:32,630 (trainer:753) INFO: 13epoch:train:21262-22380batch: iter_time=2.035e-04, forward_time=0.126, loss_ctc=24.697, loss_att=11.566, acc=0.917, loss=15.505, backward_time=0.149, grad_norm=36.852, clip=99.643, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.422e-05, train_time=0.429
+[seoultech:0/4] 2024-02-04 16:10:41,012 (trainer:352) INFO: 13epoch results: [train] iter_time=2.381e-04, forward_time=0.125, loss_ctc=24.381, loss_att=11.375, acc=0.914, loss=15.277, backward_time=0.154, grad_norm=36.768, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.563e-05, train_time=0.439, time=2 hours, 44 minutes and 1.68 seconds, total_count=290992, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=18.130, cer_ctc=0.121, loss_att=8.147, acc=0.945, cer=0.074, wer=0.215, loss=11.142, time=14 minutes and 31.12 seconds, total_count=36972, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 32.51 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-04 16:10:50,004 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-04 16:10:50,013 (trainer:461) INFO: The model files were removed: exp/asr_train_asr_conformer8_n_fft512_hop_length256_raw_kr_char/3epoch.pth
+[seoultech:0/4] 2024-02-04 16:10:50,014 (trainer:286) INFO: 14/35epoch started. Estimated time to finish: 2 days, 18 hours and 22 minutes
+[seoultech:0/4] 2024-02-04 16:19:08,752 (trainer:753) INFO: 14epoch:train:1-1119batch: iter_time=9.177e-04, forward_time=0.119, loss_ctc=23.368, loss_att=10.879, acc=0.915, loss=14.626, backward_time=0.136, grad_norm=35.810, clip=99.732, loss_scale=1.000, optim_step_time=0.032, optim0_lr0=7.408e-05, train_time=0.445
+[seoultech:0/4] 2024-02-04 16:27:16,944 (trainer:753) INFO: 14epoch:train:1120-2238batch: iter_time=1.912e-04, forward_time=0.118, loss_ctc=23.871, loss_att=11.159, acc=0.918, loss=14.972, backward_time=0.136, grad_norm=36.321, clip=99.643, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.394e-05, train_time=0.436
+[seoultech:0/4] 2024-02-04 16:35:19,075 (trainer:753) INFO: 14epoch:train:2239-3357batch: iter_time=2.018e-04, forward_time=0.131, loss_ctc=23.912, loss_att=11.181, acc=0.916, loss=15.000, backward_time=0.129, grad_norm=36.626, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.380e-05, train_time=0.430
+[seoultech:0/4] 2024-02-04 16:43:28,016 (trainer:753) INFO: 14epoch:train:3358-4476batch: iter_time=2.071e-04, forward_time=0.134, loss_ctc=23.198, loss_att=10.747, acc=0.912, loss=14.482, backward_time=0.129, grad_norm=36.740, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.366e-05, train_time=0.436
+[seoultech:0/4] 2024-02-04 16:51:29,746 (trainer:753) INFO: 14epoch:train:4477-5595batch: iter_time=2.020e-04, forward_time=0.121, loss_ctc=24.281, loss_att=11.288, acc=0.915, loss=15.186, backward_time=0.135, grad_norm=36.971, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=7.352e-05, train_time=0.430
+[seoultech:0/4] 2024-02-04 16:59:25,224 (trainer:753) INFO: 14epoch:train:5596-6714batch: iter_time=1.549e-04, forward_time=0.109, loss_ctc=24.277, loss_att=11.387, acc=0.919, loss=15.254, backward_time=0.142, grad_norm=37.044, clip=99.911, loss_scale=1.000, optim_step_time=0.030, optim0_lr0=7.338e-05, train_time=0.424
+[seoultech:0/4] 2024-02-04 17:07:19,026 (trainer:753) INFO: 14epoch:train:6715-7833batch: iter_time=1.439e-04, forward_time=0.107, loss_ctc=23.967, loss_att=11.253, acc=0.917, loss=15.067, backward_time=0.148, grad_norm=36.793, clip=99.911, loss_scale=1.000, optim_step_time=0.028, optim0_lr0=7.324e-05, train_time=0.423
+[seoultech:0/4] 2024-02-04 17:15:26,905 (trainer:753) INFO: 14epoch:train:7834-8952batch: iter_time=1.900e-04, forward_time=0.119, loss_ctc=23.914, loss_att=11.080, acc=0.916, loss=14.930, backward_time=0.151, grad_norm=35.711, clip=99.821, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=7.310e-05, train_time=0.435
+[seoultech:0/4] 2024-02-04 17:23:37,812 (trainer:753) INFO: 14epoch:train:8953-10071batch: iter_time=2.009e-04, forward_time=0.121, loss_ctc=23.977, loss_att=11.185, acc=0.917, loss=15.022, backward_time=0.159, grad_norm=36.558, clip=100.000, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.297e-05, train_time=0.438
+[seoultech:0/4] 2024-02-04 17:31:41,575 (trainer:753) INFO: 14epoch:train:10072-11190batch: iter_time=1.754e-04, forward_time=0.116, loss_ctc=23.530, loss_att=10.991, acc=0.915, loss=14.752, backward_time=0.130, grad_norm=36.384, clip=99.643, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=7.283e-05, train_time=0.432
+[seoultech:0/4] 2024-02-04 17:39:51,588 (trainer:753) INFO: 14epoch:train:11191-12309batch: iter_time=1.664e-04, forward_time=0.117, loss_ctc=23.307, loss_att=10.893, acc=0.915, loss=14.617, backward_time=0.142, grad_norm=35.405, clip=99.821, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=7.270e-05, train_time=0.437
+[seoultech:0/4] 2024-02-04 17:48:11,593 (trainer:753) INFO: 14epoch:train:12310-13428batch: iter_time=1.844e-04, forward_time=0.123, loss_ctc=24.586, loss_att=11.487, acc=0.916, loss=15.417, backward_time=0.161, grad_norm=37.847, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=7.256e-05, train_time=0.446
+[seoultech:0/4] 2024-02-04 17:56:12,342 (trainer:753) INFO: 14epoch:train:13429-14547batch: iter_time=1.992e-04, forward_time=0.120, loss_ctc=23.802, loss_att=11.110, acc=0.916, loss=14.917, backward_time=0.160, grad_norm=36.297, clip=99.821, loss_scale=1.000, optim_step_time=0.033, optim0_lr0=7.243e-05, train_time=0.429
+[seoultech:0/4] 2024-02-04 18:04:22,478 (trainer:753) INFO: 14epoch:train:14548-15666batch: iter_time=1.850e-04, forward_time=0.130, loss_ctc=23.599, loss_att=11.114, acc=0.915, loss=14.860, backward_time=0.136, grad_norm=37.301, clip=99.732, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=7.230e-05, train_time=0.437
+[seoultech:0/4] 2024-02-04 18:12:38,601 (trainer:753) INFO: 14epoch:train:15667-16785batch: iter_time=1.981e-04, forward_time=0.128, loss_ctc=23.656, loss_att=11.034, acc=0.914, loss=14.821, backward_time=0.139, grad_norm=37.299, clip=99.285, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.217e-05, train_time=0.443
+[seoultech:0/4] 2024-02-04 18:20:46,878 (trainer:753) INFO: 14epoch:train:16786-17904batch: iter_time=2.117e-04, forward_time=0.126, loss_ctc=24.405, loss_att=11.433, acc=0.916, loss=15.324, backward_time=0.136, grad_norm=37.008, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.204e-05, train_time=0.436
+[seoultech:0/4] 2024-02-04 18:29:02,776 (trainer:753) INFO: 14epoch:train:17905-19023batch: iter_time=1.877e-04, forward_time=0.118, loss_ctc=23.385, loss_att=10.923, acc=0.913, loss=14.662, backward_time=0.158, grad_norm=36.337, clip=99.643, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=7.191e-05, train_time=0.442
+[seoultech:0/4] 2024-02-04 18:37:13,628 (trainer:753) INFO: 14epoch:train:19024-20142batch: iter_time=1.950e-04, forward_time=0.116, loss_ctc=24.166, loss_att=11.254, acc=0.918, loss=15.128, backward_time=0.171, grad_norm=36.753, clip=99.911, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.178e-05, train_time=0.438
+[seoultech:0/4] 2024-02-04 18:45:22,643 (trainer:753) INFO: 14epoch:train:20143-21261batch: iter_time=2.017e-04, forward_time=0.123, loss_ctc=23.798, loss_att=11.133, acc=0.915, loss=14.933, backward_time=0.147, grad_norm=37.331, clip=99.732, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.165e-05, train_time=0.436
+[seoultech:0/4] 2024-02-04 18:53:39,014 (trainer:753) INFO: 14epoch:train:21262-22380batch: iter_time=1.958e-04, forward_time=0.132, loss_ctc=24.129, loss_att=11.248, acc=0.916, loss=15.112, backward_time=0.164, grad_norm=37.090, clip=100.000, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.152e-05, train_time=0.443
+[seoultech:0/4] 2024-02-04 19:10:00,133 (trainer:352) INFO: 14epoch results: [train] iter_time=2.255e-04, forward_time=0.121, loss_ctc=23.848, loss_att=11.135, acc=0.916, loss=14.949, backward_time=0.145, grad_norm=36.679, clip=99.803, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=7.278e-05, train_time=0.436, time=2 hours, 42 minutes and 53.45 seconds, total_count=313376, gpu_max_cached_mem_GB=20.641, [valid] loss_ctc=17.888, cer_ctc=0.119, loss_att=8.009, acc=0.945, cer=0.073, wer=0.213, loss=10.973, time=14 minutes and 41.79 seconds, total_count=39816, gpu_max_cached_mem_GB=20.641, [att_plot] time=1 minute and 34.88 seconds, total_count=0, gpu_max_cached_mem_GB=20.641
+[seoultech:0/4] 2024-02-04 19:10:09,339 (trainer:407) INFO: The best model has been updated: valid.acc
+[seoultech:0/4] 2024-02-04 19:10:09,349 (trainer:461) INFO: The model files were removed: exp/asr_train_asr_conformer8_n_fft512_hop_length256_raw_kr_char/4epoch.pth
+[seoultech:0/4] 2024-02-04 19:10:09,349 (trainer:286) INFO: 15/35epoch started. Estimated time to finish: 2 days, 15 hours and 19 minutes
+[seoultech:0/4] 2024-02-04 19:18:13,691 (trainer:753) INFO: 15epoch:train:1-1119batch: iter_time=4.736e-04, forward_time=0.133, loss_ctc=23.232, loss_att=10.905, acc=0.920, loss=14.603, backward_time=0.141, grad_norm=35.771, clip=99.821, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=7.139e-05, train_time=0.432
+[seoultech:0/4] 2024-02-04 19:26:21,338 (trainer:753) INFO: 15epoch:train:1120-2238batch: iter_time=2.021e-04, forward_time=0.131, loss_ctc=22.713, loss_att=10.653, acc=0.915, loss=14.271, backward_time=0.129, grad_norm=36.046, clip=99.732, loss_scale=1.000, optim_step_time=0.038, optim0_lr0=7.126e-05, train_time=0.435
+[seoultech:0/4] 2024-02-04 19:34:28,704 (trainer:753) INFO: 15epoch:train:2239-3357batch: iter_time=1.937e-04, forward_time=0.126, loss_ctc=22.823, loss_att=10.681, acc=0.916, loss=14.324, backward_time=0.147, grad_norm=36.337, clip=99.643, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.114e-05, train_time=0.435
+[seoultech:0/4] 2024-02-04 19:42:43,302 (trainer:753) INFO: 15epoch:train:3358-4476batch: iter_time=1.868e-04, forward_time=0.114, loss_ctc=23.980, loss_att=11.164, acc=0.919, loss=15.009, backward_time=0.168, grad_norm=37.283, clip=99.821, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=7.101e-05, train_time=0.441
+[seoultech:0/4] 2024-02-04 19:51:00,726 (trainer:753) INFO: 15epoch:train:4477-5595batch: iter_time=2.021e-04, forward_time=0.125, loss_ctc=22.865, loss_att=10.605, acc=0.913, loss=14.283, backward_time=0.160, grad_norm=36.301, clip=99.643, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.089e-05, train_time=0.444
+[seoultech:0/4] 2024-02-04 19:59:17,313 (trainer:753) INFO: 15epoch:train:5596-6714batch: iter_time=1.932e-04, forward_time=0.123, loss_ctc=22.895, loss_att=10.678, acc=0.916, loss=14.343, backward_time=0.173, grad_norm=35.755, clip=99.821, loss_scale=1.000, optim_step_time=0.036, optim0_lr0=7.076e-05, train_time=0.443
+[seoultech:0/4] 2024-02-04 20:07:33,177 (trainer:753) INFO: 15epoch:train:6715-7833batch: iter_time=1.915e-04, forward_time=0.123, loss_ctc=23.964, loss_att=11.246, acc=0.921, loss=15.061, backward_time=0.171, grad_norm=37.891, clip=99.821, loss_scale=1.000, optim_step_time=0.035, optim0_lr0=7.064e-05, train_time=0.442
+[seoultech:0/4] 2024-02-04 20:15:36,840 (trainer:753) INFO: 15epoch:train:7834-8952batch: iter_time=1.410e-04, forward_time=0.109, loss_ctc=23.331, loss_att=10.863, acc=0.915, loss=14.603, backward_time=0.133, grad_norm=37.512, clip=99.732, loss_scale=1.000, optim_step_time=0.030, optim0_lr0=7.052e-05, train_time=0.432
+[seoultech:0/4] 2024-02-04 20:23:47,852 (trainer:753) INFO: 15epoch:train:8953-10071batch: iter_time=2.116e-04, forward_time=0.133, loss_ctc=23.570, loss_att=11.040, acc=0.918, loss=14.799, backward_time=0.129, grad_norm=37.843, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.039e-05, train_time=0.438
+[seoultech:0/4] 2024-02-04 20:31:58,262 (trainer:753) INFO: 15epoch:train:10072-11190batch: iter_time=2.088e-04, forward_time=0.133, loss_ctc=23.409, loss_att=11.000, acc=0.916, loss=14.723, backward_time=0.128, grad_norm=37.443, clip=99.553, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.027e-05, train_time=0.437
+[seoultech:0/4] 2024-02-04 20:40:05,915 (trainer:753) INFO: 15epoch:train:11191-12309batch: iter_time=2.091e-04, forward_time=0.132, loss_ctc=23.606, loss_att=10.973, acc=0.917, loss=14.763, backward_time=0.129, grad_norm=36.706, clip=99.821, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=7.015e-05, train_time=0.435
+[seoultech:0/4] 2024-02-04 20:48:17,552 (trainer:753) INFO: 15epoch:train:12310-13428batch: iter_time=1.822e-04, forward_time=0.117, loss_ctc=24.034, loss_att=11.251, acc=0.919, loss=15.086, backward_time=0.143, grad_norm=38.279, clip=99.911, loss_scale=1.000, optim_step_time=0.034, optim0_lr0=7.003e-05, train_time=0.439
+[seoultech:0/4] 2024-02-04 20:56:20,838 (trainer:753) INFO: 15epoch:train:13429-14547batch: iter_time=1.942e-04, forward_time=0.127, loss_ctc=23.452, loss_att=10.921, acc=0.917, loss=14.681, backward_time=0.139, grad_norm=36.632, clip=99.911, loss_scale=1.000, optim_step_time=0.037, optim0_lr0=6.991e-05, train_time=0.431
